@@ -1,8 +1,6 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Media3D;
 
 namespace Sasinosoft.SampMapEditor
 {
@@ -51,6 +49,10 @@ namespace Sasinosoft.SampMapEditor
                 // TODO: check for saving before closing
                 Application.Current.Shutdown();
             }
+            else if(e.Command == MainWindowCommands.SettingsCommand)
+            {
+                new SettingsWindow().ShowDialog();
+            }
         }
 
         public void OnViewportMouseDown(object sender, MouseButtonEventArgs e)
@@ -98,6 +100,31 @@ namespace Sasinosoft.SampMapEditor
             if (e.ChangedButton == MouseButton.Right)
             {
                 Cursor = Cursors.Arrow;
+            }
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            var fname = Path.Combine(Properties.Settings.Default.GTASAPath, "models", "gta3.img");
+            if (!File.Exists(fname))
+            {
+                new SettingsWindow().ShowDialog();
+            }
+
+            // if, again, after prompting the user with the settings window, 
+            // they didn't set a valid path to GTA San Andreas root folder, then:
+            if (!File.Exists(fname))
+            {
+                MessageBox.Show(
+                    "You must specify a valid GTA San Andreas installation folder. Unable to load model data.",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+            }
+            else
+            {
+                ModelContainer.LoadSanAndreasArchives();
             }
         }
     }

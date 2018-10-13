@@ -33,9 +33,50 @@ namespace Sasinosoft.SampMapEditor.RenderWareDff
         // (if Flags contain RwObjectVertexUv)
         public struct VertextUV
         {
-            public UInt32 U;
-            public UInt32 V;
+            public float U;
+            public float V;
         }
+        public List<VertextUV> VertextUVs = new List<VertextUV>();
         // 
+
+        // face info
+        public struct Triangle
+        {
+            public UInt16 Vertex2;
+            public UInt16 Vertex1;
+            public UInt16 Flags;
+            public UInt16 Vertex3;
+        }
+        public List<Triangle> Triangles = new List<Triangle>();
+
+        // bounding sphere info
+        public float BoundingSphereX;
+        public float BoundingSphereY;
+        public float BoundingSphereZ;
+        public float BoundingSphereRadius;
+        public UInt32 HasPosition;
+        public UInt32 HasNormals;
+        //
+
+        // vertex info
+        public struct Vertex
+        {
+            public float X;
+            public float Y;
+            public float Z;
+        }
+        public List<Vertex> Vertices = new List<Vertex>();
+        //
+
+        // normal info
+        // (if Flags contain RwObjectVertexNormal)
+        public struct Normal
+        {
+            public float X;
+            public float Y;
+            public float Z;
+        }
+        public List<Normal> Normals = new List<Normal>();
+        //
     }
 }
