@@ -8,7 +8,8 @@
         Title="{Binding Title}" 
         Width="800"
         Height="600"
-        PreviewMouseUp="OnMouseUp">
+        PreviewMouseUp="OnMouseUp"
+        Loaded="OnLoaded">
     
     <Window.DataContext>
         <local:MainWindowViewModel/>
@@ -21,6 +22,7 @@
         <CommandBinding Command="{x:Static local:MainWindowCommands.SaveAsCommand}" CanExecute="OnCommandCanExecute" Executed="OnCommandExecuted"/>
         <CommandBinding Command="{x:Static local:MainWindowCommands.ExportCommand}" CanExecute="OnCommandCanExecute" Executed="OnCommandExecuted"/>
         <CommandBinding Command="{x:Static local:MainWindowCommands.ExitCommand}" CanExecute="OnCommandCanExecute" Executed="OnCommandExecuted"/>
+        <CommandBinding Command="{x:Static local:MainWindowCommands.SettingsCommand}" CanExecute="OnCommandCanExecute" Executed="OnCommandExecuted"/>
     </Window.CommandBindings>
 
     <Window.InputBindings>
@@ -50,12 +52,13 @@
                 <MenuItem Header="_Save" Command="{x:Static local:MainWindowCommands.SaveCommand}"/>
                 <MenuItem Header="Save _as..." Command="{x:Static local:MainWindowCommands.SaveAsCommand}"/>
                 <Separator/>
-                <MenuItem Header="_Export" Command="{x:Static local:MainWindowCommands.ExportCommand}"/>
+                <MenuItem Header="E_xport" Command="{x:Static local:MainWindowCommands.ExportCommand}"/>
                 <Separator/>
-                <MenuItem Header="E_xit" Command="{x:Static local:MainWindowCommands.ExitCommand}"/>
+                <MenuItem Header="_Exit" Command="{x:Static local:MainWindowCommands.ExitCommand}"/>
             </MenuItem>
-            <!--<MenuItem Header="_Edit">
-            </MenuItem>-->
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Settings" Command="{x:Static local:MainWindowCommands.SettingsCommand}"/>
+            </MenuItem>
         </Menu>
         
         <Grid Grid.Row="1">

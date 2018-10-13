@@ -1,7 +1,9 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Sasinosoft.SampMapEditor.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="GTASAPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files (x86)\Rockstar Games\GTA San Andreas</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
