@@ -1,4 +1,4 @@
 ﻿namespace Sasinosoft.SampMapEditor.RenderWareDff
 {
-    public abstract class DataSection : Section { }
+    public abstract class DataSection : Section {}
 }

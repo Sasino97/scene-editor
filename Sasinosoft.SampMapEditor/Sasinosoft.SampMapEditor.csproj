@@ -64,10 +64,13 @@
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="GTASAFilesContainer.cs" />
     <Compile Include="MouseUtils.cs" />
+    <Compile Include="RenderWareDff\AnimPluginDataSection.cs" />
+    <Compile Include="RenderWareDff\AtomicDataSection.cs" />
     <Compile Include="RenderWareDff\ClumpDataSection.cs" />
     <Compile Include="RenderWareDff\ComplexSection.cs" />
     <Compile Include="RenderWareDff\DffParser.cs" />
     <Compile Include="RenderWareDff\DffModel.cs" />
+    <Compile Include="RenderWareDff\DffParsingException.cs" />
     <Compile Include="RenderWareDff\FrameDataSection.cs" />
     <Compile Include="RenderWareDff\FrameListDataSection.cs" />
     <Compile Include="RenderWareDff\GeometryDataSection.cs" />
@@ -77,9 +80,9 @@
     <Compile Include="RenderWareDff\MaterialListDataSection.cs" />
     <Compile Include="RenderWareDff\MaterialSplitDataSection.cs" />
     <Compile Include="RenderWareDff\Section.cs" />
-    <Compile Include="RenderWareDff\SectionHeader.cs" />
     <Compile Include="RenderWareDff\SectionType.cs" />
     <Compile Include="RenderWareDff\DataSection.cs" />
+    <Compile Include="RenderWareDff\TextureDataSection.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -127,6 +130,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="IMG\readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="RenderWareDff\readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
