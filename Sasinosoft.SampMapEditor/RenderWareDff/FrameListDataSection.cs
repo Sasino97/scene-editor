@@ -3,14 +3,15 @@ using System.Collections.Generic;
 
 namespace Sasinosoft.SampMapEditor.RenderWareDff
 {
+    // variable length
     public class FrameListDataSection : DataSection
     {
         public class FrameStruct
         {
-            public float[,] RotationalMatrix = new float[3, 3];
-            public float[] CoordinatesOffset = new float[3];
+            public float[,] RotationalMatrix;
+            public float[] CoordinatesOffset;
             public UInt32 Parent;
-            public UInt32 Unknown;
+            public UInt32 Unknown1;
         }
 
         public UInt32 FrameCount;

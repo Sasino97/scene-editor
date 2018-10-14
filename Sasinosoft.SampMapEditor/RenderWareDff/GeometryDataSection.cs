@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Sasinosoft.SampMapEditor.RenderWareDff
 {
+    // variable length
     public class GeometryDataSection : DataSection
     {
         public GeometryDataFlags Flags = GeometryDataFlags.None;
