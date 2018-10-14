@@ -1,8 +1,4 @@
-﻿/*
- * Thanks to whoever wrote the code which is shown in this page:
- * https://www.grandtheftwiki.com/IMG_Archive#Version_2_-_GTA_SA
- */
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
