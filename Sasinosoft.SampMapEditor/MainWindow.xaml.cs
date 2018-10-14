@@ -124,8 +124,14 @@ namespace Sasinosoft.SampMapEditor
             }
             else
             {
-                ModelContainer.LoadSanAndreasArchives();
+                GTASAFilesContainer.Load();
+                GTASAFilesContainer.LoadCompleted += OnGTASAFilesContainerLoadCompleted;
             }
+        }
+
+        private void OnGTASAFilesContainerLoadCompleted(object sender, System.EventArgs e)
+        {
+            ViewModel.IsReady = true;
         }
     }
 }

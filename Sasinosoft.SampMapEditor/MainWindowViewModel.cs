@@ -65,13 +65,27 @@ namespace Sasinosoft.SampMapEditor
             }
         }
 
+        // Other information
+        private bool isReady = false;
+        public bool IsReady
+        {
+            get { return isReady; }
+            set
+            {
+                if(isReady != value)
+                {
+                    isReady = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         // private variables
         private double cameraPitch;
         private double cameraYaw;
 
         public MainWindowViewModel()
         {
-
         }
 
         public void RotateCamera(double yaw, double pitch)

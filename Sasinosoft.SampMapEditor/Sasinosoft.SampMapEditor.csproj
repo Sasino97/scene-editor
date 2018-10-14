@@ -55,13 +55,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BooleanToVisibilityInverseConverter.cs" />
     <Compile Include="IMG\DirEntry.cs" />
     <Compile Include="IMG\IMGArchive.cs" />
     <Compile Include="IMG\IMGArchiveFile.cs" />
     <Compile Include="IMG\UnknownIMGVersionException.cs" />
     <Compile Include="MainWindowCommands.cs" />
     <Compile Include="MainWindowViewModel.cs" />
-    <Compile Include="ModelContainer.cs" />
+    <Compile Include="GTASAFilesContainer.cs" />
     <Compile Include="MouseUtils.cs" />
     <Compile Include="RenderWareDff\ClumpDataSection.cs" />
     <Compile Include="RenderWareDff\ComplexSection.cs" />
