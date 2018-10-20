@@ -23,7 +23,10 @@ namespace Sasinosoft.SampMapEditor.RenderWare
             foreach(Section section in clump.GetChildren(SectionType.RwTextureNative))
             {
                 var textureInfo = (TextureNativeDataSection) ((ExtendedSection)section).GetChild(0);
-                var brush = new ImageBrush();
+                var brush = new ImageBrush()
+                {
+                    ViewportUnits = BrushMappingMode.Absolute,
+                };
 
                 // set the brush to image data after decoding the format
                 if (textureInfo.D3DTextureFormat == TextureFormats.DXT1)

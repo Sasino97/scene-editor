@@ -9,7 +9,7 @@ namespace Sasinosoft.SampMapEditor.RenderWare
     public class RenderWareModel : ModelVisual3D
     {
         private ExtendedSection clump;
-        private Dictionary<string, MaterialGroup> MaterialGroupDictionary = new Dictionary<string, MaterialGroup>();
+        private Dictionary<string, List<MaterialGroup>> MaterialGroupDictionary = new Dictionary<string, List<MaterialGroup>>();
 
         public RenderWareModel() : base() { }
         public RenderWareModel(ExtendedSection clump) : base()
@@ -39,11 +39,11 @@ namespace Sasinosoft.SampMapEditor.RenderWare
                     //
                     foreach (var vertex in geometryInfo.Vertices)
                     {
-                        meshGeometry3d.Positions.Add(new Point3D(vertex.X, vertex.Y, vertex.Z));
+                        meshGeometry3d.Positions.Add(new Point3D(vertex.X, vertex.Z, vertex.Y));
                     }
                     foreach (var normal in geometryInfo.Normals)
                     {
-                        meshGeometry3d.Normals.Add(new Vector3D(normal.X, normal.Y, normal.Z));
+                        meshGeometry3d.Normals.Add(new Vector3D(normal.X, normal.Z, normal.Y));
                     }
                     foreach (var uvcoord in geometryInfo.VertexUVs)
                     {
@@ -67,7 +67,18 @@ namespace Sasinosoft.SampMapEditor.RenderWare
                             foreach (Section texture in ((ExtendedSection)material).GetChildren(SectionType.RwTexture))
                             {
                                 var textureInfo = (StringDataSection)((ExtendedSection)texture).GetChild(1);
-                                MaterialGroupDictionary.Add(textureInfo.String, matGroup);
+
+                                if(!MaterialGroupDictionary.ContainsKey(textureInfo.String))
+                                {
+                                    var list = new List<MaterialGroup>();
+                                    list.Add(matGroup);
+                                    MaterialGroupDictionary.Add(textureInfo.String, list);
+                                }
+                                else
+                                {
+                                    var list = MaterialGroupDictionary[textureInfo.String];
+                                    list.Add(matGroup);
+                                }
                             }
                         }
                     }
@@ -81,12 +92,13 @@ namespace Sasinosoft.SampMapEditor.RenderWare
         {
             foreach(string name in MaterialGroupDictionary.Keys)
             {
-                MaterialGroup group = MaterialGroupDictionary[name];
+                List<MaterialGroup> groupList = MaterialGroupDictionary[name];
                 Material material;
 
                 if(txd.MaterialDictionary.TryGetValue(name, out material))
                 {
-                    group.Children.Add(material);
+                    foreach(MaterialGroup group in groupList)
+                        group.Children.Add(material);
                 }
             }
         }
