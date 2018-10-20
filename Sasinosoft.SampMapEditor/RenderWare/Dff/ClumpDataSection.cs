@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sasinosoft.SampMapEditor.RenderWareDff
+namespace Sasinosoft.SampMapEditor.RenderWare.Dff
 {
     // 12 bytes
     public class ClumpDataSection : DataSection

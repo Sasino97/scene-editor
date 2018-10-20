@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sasinosoft.SampMapEditor.RenderWareDff
+namespace Sasinosoft.SampMapEditor.RenderWare.Dff
 {
     // variable length
     public class FrameDataSection : DataSection

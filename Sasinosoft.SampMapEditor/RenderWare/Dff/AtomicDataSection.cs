@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sasinosoft.SampMapEditor.RenderWareDff
+namespace Sasinosoft.SampMapEditor.RenderWare.Dff
 {
     public class AtomicDataSection : DataSection
     {

@@ -100,7 +100,7 @@ namespace Sasinosoft.SampMapEditor
                 cameraPitch = 90;
 
             CameraLookDirection = new Vector3D(
-                Math.Cos(cameraPitch) * Math.Sin(cameraYaw),
+                Math.Sin(cameraYaw) * Math.Cos(cameraPitch),
                 Math.Sin(cameraPitch),
                 Math.Cos(cameraYaw) * Math.Cos(cameraPitch)
             );

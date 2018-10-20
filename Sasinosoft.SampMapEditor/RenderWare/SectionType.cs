@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sasinosoft.SampMapEditor.RenderWareDff
+namespace Sasinosoft.SampMapEditor.RenderWare
 {
     public enum SectionType : UInt32
     {
@@ -16,8 +16,11 @@ namespace Sasinosoft.SampMapEditor.RenderWareDff
         RwClump             = 0x00000010,
         RwLight             = 0x00000012,
         RwAtomic            = 0x00000014,
+        RwTextureNative     = 0x00000015,
+        RwTextureDictionary = 0x00000016,
         RwGeometryList      = 0x0000001A,
         RwRightToRender     = 0x0000001F,
+        RwSkinPlugin        = 0x00000116,
         RwAnimPlugin        = 0x0000011E,
         RwMaterialEffects   = 0x00000120,
         RwMaterialSplit     = 0x0000050E,

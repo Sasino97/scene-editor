@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sasinosoft.SampMapEditor.RenderWareDff
+namespace Sasinosoft.SampMapEditor.RenderWare.Dff
 {
     // length 4 bytes
     public class TextureDataSection : DataSection
