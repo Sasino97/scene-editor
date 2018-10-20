@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sasinosoft.SampMapEditor.RenderWareDff
+namespace Sasinosoft.SampMapEditor.RenderWare.Dff
 {
     // 8 bytes
     public class MaterialListDataSection : DataSection

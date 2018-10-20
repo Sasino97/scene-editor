@@ -56,6 +56,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BooleanToVisibilityInverseConverter.cs" />
+    <Compile Include="RenderWare\Txd\TextureFormats.cs" />
+    <Compile Include="S3TextureCompression\DXT1Decompressor.cs" />
     <Compile Include="IMG\DirEntry.cs" />
     <Compile Include="IMG\IMGArchive.cs" />
     <Compile Include="IMG\IMGArchiveFile.cs" />
@@ -64,25 +66,31 @@
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="GTASAFilesContainer.cs" />
     <Compile Include="MouseUtils.cs" />
-    <Compile Include="RenderWareDff\AnimPluginDataSection.cs" />
-    <Compile Include="RenderWareDff\AtomicDataSection.cs" />
-    <Compile Include="RenderWareDff\ClumpDataSection.cs" />
-    <Compile Include="RenderWareDff\ComplexSection.cs" />
-    <Compile Include="RenderWareDff\DffParser.cs" />
-    <Compile Include="RenderWareDff\DffModel.cs" />
-    <Compile Include="RenderWareDff\DffParsingException.cs" />
-    <Compile Include="RenderWareDff\FrameDataSection.cs" />
-    <Compile Include="RenderWareDff\FrameListDataSection.cs" />
-    <Compile Include="RenderWareDff\GeometryDataSection.cs" />
-    <Compile Include="RenderWareDff\GeometryDataFlags.cs" />
-    <Compile Include="RenderWareDff\GeometryListDataSection.cs" />
-    <Compile Include="RenderWareDff\MaterialDataSection.cs" />
-    <Compile Include="RenderWareDff\MaterialListDataSection.cs" />
-    <Compile Include="RenderWareDff\MaterialSplitDataSection.cs" />
-    <Compile Include="RenderWareDff\Section.cs" />
-    <Compile Include="RenderWareDff\SectionType.cs" />
-    <Compile Include="RenderWareDff\DataSection.cs" />
-    <Compile Include="RenderWareDff\TextureDataSection.cs" />
+    <Compile Include="RenderWare\Dff\AnimPluginDataSection.cs" />
+    <Compile Include="RenderWare\Dff\AtomicDataSection.cs" />
+    <Compile Include="RenderWare\Dff\ClumpDataSection.cs" />
+    <Compile Include="RenderWare\ExtendedSection.cs" />
+    <Compile Include="RenderWare\Dff\DffParser.cs" />
+    <Compile Include="RenderWare\RenderWareModel.cs" />
+    <Compile Include="RenderWare\Dff\DffParsingException.cs" />
+    <Compile Include="RenderWare\Dff\FrameDataSection.cs" />
+    <Compile Include="RenderWare\Dff\FrameListDataSection.cs" />
+    <Compile Include="RenderWare\Dff\GeometryDataSection.cs" />
+    <Compile Include="RenderWare\Dff\GeometryDataFlags.cs" />
+    <Compile Include="RenderWare\Dff\GeometryListDataSection.cs" />
+    <Compile Include="RenderWare\Dff\MaterialDataSection.cs" />
+    <Compile Include="RenderWare\Dff\MaterialListDataSection.cs" />
+    <Compile Include="RenderWare\Dff\MaterialSplitDataSection.cs" />
+    <Compile Include="RenderWare\RenderWareTexture.cs" />
+    <Compile Include="RenderWare\Section.cs" />
+    <Compile Include="RenderWare\SectionType.cs" />
+    <Compile Include="RenderWare\DataSection.cs" />
+    <Compile Include="RenderWare\StringDataSection.cs" />
+    <Compile Include="RenderWare\Dff\TextureDataSection.cs" />
+    <Compile Include="RenderWare\Txd\TextureDictionaryDataSection.cs" />
+    <Compile Include="RenderWare\Txd\TextureNativeDataSection.cs" />
+    <Compile Include="RenderWare\Txd\TxdParser.cs" />
+    <Compile Include="RenderWare\Txd\TxdParsingException.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -135,7 +143,11 @@
     <None Include="IMG\readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="RenderWareDff\readme.txt" />
+    <None Include="RenderWare\readme.txt" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="S3TextureCompression\readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

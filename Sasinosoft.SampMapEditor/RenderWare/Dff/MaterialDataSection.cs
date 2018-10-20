@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sasinosoft.SampMapEditor.RenderWareDff
+namespace Sasinosoft.SampMapEditor.RenderWare.Dff
 {
     // 28 bytes
     public class MaterialDataSection : DataSection
@@ -16,8 +16,6 @@ namespace Sasinosoft.SampMapEditor.RenderWareDff
         public MaterialColor Color;
         public UInt32 Unknown2;
         public UInt32 TextureCount;
-        public float Unknown3;
-        public float Unknown4;
-        public float Unknown5;
+        public float[] Unknown3;
     }
 }

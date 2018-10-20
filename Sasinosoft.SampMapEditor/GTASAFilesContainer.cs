@@ -1,8 +1,11 @@
 ﻿using Sasinosoft.SampMapEditor.IMG;
+using Sasinosoft.SampMapEditor.RenderWare;
+using Sasinosoft.SampMapEditor.RenderWare.Dff;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
+using System.Threading;
 
 namespace Sasinosoft.SampMapEditor
 {
@@ -14,58 +17,54 @@ namespace Sasinosoft.SampMapEditor
         public static event EventHandler LoadCompleted;
         public static event EventHandler ProgressChanged;
 
-        private enum WorkerOperation
-        {
-            None,
-            LoadGTA3Img
-        }
-        private static BackgroundWorker worker;
+        private static Thread loaderThread;
 
         static GTASAFilesContainer()
         {
-            worker = new BackgroundWorker();
-            worker.DoWork += OnWorkerDoWork;
-            worker.ProgressChanged += OnWorkerProgressChanged;
-            worker.RunWorkerCompleted += OnWorkerRunWorkerCompleted;
+            loaderThread = new Thread(new ThreadStart(DoWork), 5000000);
         }
 
         public static void Load()
         {
-            worker.RunWorkerAsync(WorkerOperation.LoadGTA3Img);
+            loaderThread.Start();
         }
-
-        private static void OnWorkerRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        
+        private static void DoWork()
         {
-            LoadCompleted?.Invoke(typeof(GTASAFilesContainer), new EventArgs());
-        }
-
-        private static void OnWorkerProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            ProgressChanged?.Invoke(typeof(GTASAFilesContainer), new EventArgs());
-        }
-
-        private static void OnWorkerDoWork(object sender, DoWorkEventArgs e)
-        {
-            switch((WorkerOperation)e.Argument)
+            string fname = Path.Combine(Properties.Settings.Default.GTASAPath, "models", "gta3.img");
+            using (var imgArchive = new IMGArchive(fname))
             {
-                case WorkerOperation.LoadGTA3Img:
-                    string fname = Path.Combine(Properties.Settings.Default.GTASAPath, "models", "gta3.img");
-                    using (var imgArchive = new IMGArchive(fname))
+                var parser = new DffParser();
+                var list = new List<RenderWareModel>();
+                var startTimestamp = DateTime.Now;
+                for (int i = 0; i < imgArchive.DirEntries.Count; i++)
+                {
+                    IMGArchiveFile? archiveFile = imgArchive.GetFileById(i, false);
+                    if (archiveFile.HasValue)
                     {
-                        for (int i = 0; i < imgArchive.DirEntries.Count; i++)
+                        if (Path.GetExtension(archiveFile.Value.FileEntry.FileName) == ".dff")
                         {
-                            if (e.Cancel)
-                                break;
-
-                            IMGArchiveFile? archiveFile = imgArchive.GetFileById(i);
-                            if (archiveFile.HasValue)
-                            {
-                                GTA3Files.Add(imgArchive.DirEntries[i].FileName, archiveFile.Value);
-                            }
+                            archiveFile = imgArchive.GetFileById(i, true);
+                            Debug.WriteLine(archiveFile.Value.FileEntry.FileName);
+                            list.Add(parser.Parse(archiveFile.Value.FileByteBuffer));
+                            ProgressChanged?.Invoke(typeof(GTASAFilesContainer), new EventArgs());
                         }
                     }
-                    break;
+                }
+                Debug.WriteLine("Time elapsed: {0}", DateTime.Now-startTimestamp);
+                //for (int i = 0; i < imgArchive.DirEntries.Count; i++)
+                //{
+                //    if (e.Cancel)
+                //        break;
+
+                //    IMGArchiveFile? archiveFile = imgArchive.GetFileById(i);
+                //    if (archiveFile.HasValue)
+                //    {
+                //        GTA3Files.Add(imgArchive.DirEntries[i].FileName, archiveFile.Value);
+                //    }
+                //}
             }
+            LoadCompleted?.Invoke(typeof(GTASAFilesContainer), new EventArgs());
         }
 
         // TODO: if another instance of Sasinosoft.SampMapEditor is already running

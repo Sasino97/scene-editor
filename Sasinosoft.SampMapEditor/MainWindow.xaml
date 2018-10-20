@@ -74,17 +74,18 @@
                     BorderBrush="White"
                     Background="Black">
                 <Grid>
-                    <Viewport3D Visibility="{Binding IsReady, Converter={StaticResource booleanToVisibilityConverter}}">
+                    <Viewport3D x:Name="vp3d" Visibility="{Binding IsReady, Converter={StaticResource booleanToVisibilityConverter}}">
                         <Viewport3D.Camera>
                             <PerspectiveCamera Position="{Binding CameraPosition}" 
                                                LookDirection="{Binding CameraLookDirection}"
                                                Transform="{Binding CameraTransform}"
+                                               UpDirection="0,1,0"
                                                FieldOfView="60"/>
 
                         </Viewport3D.Camera>
 
                         <!--Test 3D data-->
-                        <ModelVisual3D>
+                        <!--<ModelVisual3D>
                             <ModelVisual3D.Content>
                                 <Model3DGroup>
                                     <Model3DGroup.Children>
@@ -108,7 +109,7 @@
                                     </Model3DGroup.Children>
                                 </Model3DGroup>
                             </ModelVisual3D.Content>
-                        </ModelVisual3D>
+                        </ModelVisual3D>-->
                     </Viewport3D>
                     
                     <!--This canvas is a dummy control used only to detect mouse events on the

@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace Sasinosoft.SampMapEditor.RenderWareDff
+namespace Sasinosoft.SampMapEditor.RenderWare.Dff
 {
     public class DffParsingException : Exception
     {
-        private const string ERROR_MESSAGE = "An error has occurred during the parsing of a Dff file.";
+        private const string ERROR_MESSAGE = "An error has occurred during the parsing of a DFF file.";
 
         public DffParsingException()
             : base(ERROR_MESSAGE) { }

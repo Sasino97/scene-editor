@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using Sasinosoft.SampMapEditor.IMG;
+using Sasinosoft.SampMapEditor.RenderWare.Dff;
+using Sasinosoft.SampMapEditor.RenderWare.Txd;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 
@@ -61,7 +64,7 @@ namespace Sasinosoft.SampMapEditor
             {
                 // TODO: (selection)
             }
-            else if(e.ChangedButton == MouseButton.Right)
+            else if(e.ChangedButton == MouseButton.Middle)
             {
                 centerOfViewport = canvas.PointToScreen(new Point(canvas.ActualWidth / 2, canvas.ActualHeight / 2));
                 MouseUtils.SetPosition(centerOfViewport);
@@ -79,7 +82,7 @@ namespace Sasinosoft.SampMapEditor
 
         public void OnViewportMouseMove(object sender, MouseEventArgs e)
         {
-            if (e.RightButton == MouseButtonState.Pressed)
+            if (e.MiddleButton == MouseButtonState.Pressed)
             {
                 Point relativePos = Mouse.GetPosition(canvas);
                 Point actualRelativePos = new Point(relativePos.X - canvas.ActualWidth / 2,
@@ -97,7 +100,7 @@ namespace Sasinosoft.SampMapEditor
 
         public void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Right)
+            if (e.ChangedButton == MouseButton.Middle)
             {
                 Cursor = Cursors.Arrow;
             }
@@ -124,8 +127,21 @@ namespace Sasinosoft.SampMapEditor
             }
             else
             {
-                GTASAFilesContainer.Load();
-                GTASAFilesContainer.LoadCompleted += OnGTASAFilesContainerLoadCompleted;
+                // GTASAFilesContainer.Load();
+                // GTASAFilesContainer.LoadCompleted += OnGTASAFilesContainerLoadCompleted;
+
+                var dffParser = new DffParser();
+                var txdParser = new TxdParser();
+                //string modelPath = @"C:\Users\Salvatore\Documents\shamal.dff";
+                using (var archive = new IMGArchive(fname))
+                {
+                    var model = dffParser.Parse(archive, "smoke.dff");
+                    var texture = txdParser.Parse(archive, "smoke.txd");
+                    model.SetTextureData(texture);
+
+                    vp3d.Children.Add(model);
+                    ViewModel.IsReady = true;
+                }
             }
         }
 
