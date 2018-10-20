@@ -4,6 +4,7 @@ using Sasinosoft.SampMapEditor.RenderWare.Txd;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Media3D;
 
 namespace Sasinosoft.SampMapEditor
 {
@@ -88,7 +89,7 @@ namespace Sasinosoft.SampMapEditor
                 Point actualRelativePos = new Point(relativePos.X - canvas.ActualWidth / 2,
                                                     canvas.ActualHeight / 2 - relativePos.Y);
 
-                ViewModel.RotateCamera(actualRelativePos.X / 200, actualRelativePos.Y / 200);
+                ViewModel.RotateCamera(-(actualRelativePos.X / 200), actualRelativePos.Y / 200);
                 MouseUtils.SetPosition(centerOfViewport);
             }
         }
@@ -135,9 +136,16 @@ namespace Sasinosoft.SampMapEditor
                 //string modelPath = @"C:\Users\Salvatore\Documents\shamal.dff";
                 using (var archive = new IMGArchive(fname))
                 {
-                    var model = dffParser.Parse(archive, "smoke.dff");
-                    var texture = txdParser.Parse(archive, "smoke.txd");
+                    var model = dffParser.Parse(archive, "vla1.dff");
+                    var texture = txdParser.Parse(archive, "vla1.txd");
                     model.SetTextureData(texture);
+
+                    var transformGroup = new Transform3DGroup();
+                    model.Transform = transformGroup;
+                    transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 0, 0), 0.0)));
+                    transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), 270.0)));
+                    transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), 270.0)));
+                    transformGroup.Children.Add(new TranslateTransform3D(0.0, 0.0, 1.0));
 
                     vp3d.Children.Add(model);
                     ViewModel.IsReady = true;

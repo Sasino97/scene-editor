@@ -84,13 +84,9 @@ namespace Sasinosoft.SampMapEditor
         private double cameraPitch;
         private double cameraYaw;
 
-        public MainWindowViewModel()
-        {
-        }
-
         public void RotateCamera(double yaw, double pitch)
         {
-            cameraYaw -= yaw;
+            cameraYaw += yaw;
             cameraPitch += pitch;
 
             if (cameraPitch < -90)
@@ -98,6 +94,12 @@ namespace Sasinosoft.SampMapEditor
 
             if (cameraPitch > 90)
                 cameraPitch = 90;
+
+            if (cameraYaw < 0)
+                cameraYaw = 359;
+
+            if (cameraYaw > 359)
+                cameraYaw = 0;
 
             CameraLookDirection = new Vector3D(
                 Math.Sin(cameraYaw) * Math.Cos(cameraPitch),
