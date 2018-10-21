@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 
-namespace Sasinosoft.SampMapEditor
+namespace Sasinosoft.SampMapEditor.View
 {
     public partial class SettingsWindow : Window
     {

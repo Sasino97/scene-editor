@@ -18,13 +18,13 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Txd
         public TxdParser() { }
 
         /// <summary>
-        /// Parses a RenderWare TXD texture from a stream given its start offset and its length.
+        /// Parses a RenderWare TXD texture dictionary from a stream given its start offset and its length.
         /// </summary>
         /// <param name="stream">The stream to read.</param>
         /// <param name="offset">The offset from which it must start reading the stream.</param>
         /// <param name="length">The length in bytes of the section of the stream to read.</param>
-        /// <returns>A new RenderWareTexture object containing the TXD data read from the stream.</returns>
-        public RenderWareTexture Parse(Stream stream, int offset, int length)
+        /// <returns>A new RenderWareTextureDictionary object containing the TXD data read from the stream.</returns>
+        public RenderWareTextureDictionary Parse(Stream stream, int offset, int length)
         {
             byte[] data = new byte[length];
             stream.Read(data, offset, length);
@@ -32,11 +32,11 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Txd
         }
 
         /// <summary>
-        /// Parses a RenderWare TXD texture from a stream.
+        /// Parses a RenderWare TXD texture dictionary from a stream.
         /// </summary>
         /// <param name="stream">The stream to read.</param>
-        /// <returns>A new RenderWareTexture object containing the TXD data read from the stream.</returns>
-        public RenderWareTexture Parse(Stream stream)
+        /// <returns>A new RenderWareTextureDictionary object containing the TXD data read from the stream.</returns>
+        public RenderWareTextureDictionary Parse(Stream stream)
         {
             int offset = 0;
             long size = stream.Length;
@@ -44,21 +44,21 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Txd
         }
 
         /// <summary>
-        /// Parses a RenderWare TXD texture from a file.
+        /// Parses a RenderWare TXD texture dictionary from a file.
         /// </summary>
         /// <param name="fileName">The name of the file to read.</param>
-        /// <returns>A new RenderWareTexture object containing the TXD data read from the file stream.</returns>
-        public RenderWareTexture Parse(string fileName)
+        /// <returns>A new RenderWareTextureDictionary object containing the TXD data read from the file stream.</returns>
+        public RenderWareTextureDictionary Parse(string fileName)
         {
             return Parse(new FileStream(fileName, FileMode.Open, FileAccess.Read));
         }
 
         /// <summary>
-        /// Parses a RenderWare TXD texture from an IMG archive, given the index of the file.
+        /// Parses a RenderWare TXD texture dictionary from an IMG archive, given the index of the file.
         /// </summary>
         /// <param name="imgArchive">The object representing the IMG archive containing the TXD file.</param>
         /// <param name="index">The index of the file inside the archive.</param>
-        /// <returns>A new RenderWareTexture object containing the TXD data read from the archive.</returns>
+        /// <returns>A new RenderWareTextureDictionary object containing the TXD data read from the archive.</returns>
         /// <remarks>
         /// The IMGArchive must not be already disposed when calling this function.
         /// </remarks>
@@ -66,10 +66,10 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Txd
         /// var fileIdx = 1244;
         /// using (var imgArchive = new IMGArchive("gta3.img"))
         /// {
-        ///     RenderWareTexture texture = TxdParser.Parse(imgArchive, fileIdx);
+        ///     RenderWareTextureDictionary texture = TxdParser.Parse(imgArchive, fileIdx);
         /// }
         /// </example>
-        public RenderWareTexture Parse(IMGArchive imgArchive, int index)
+        public RenderWareTextureDictionary Parse(IMGArchive imgArchive, int index)
         {
             IMGArchiveFile? archiveFile = imgArchive.GetFileById(index);
             if (archiveFile.HasValue)
@@ -81,11 +81,11 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Txd
         }
 
         /// <summary>
-        /// Parses a RenderWare TXD texture from an IMG archive, given the name of the file.
+        /// Parses a RenderWare TXD texture dictionary from an IMG archive, given the name of the file.
         /// </summary>
         /// <param name="imgArchive">The object representing the IMG archive containing the TXD file.</param>
         /// <param name="fileName">The name of the file inside the archive.</param>
-        /// <returns>A new RenderWareTexture object containing the TXD data read from the archive.</returns>
+        /// <returns>A new RenderWareTextureDictionary object containing the TXD data read from the archive.</returns>
         /// <remarks>
         /// The IMGArchive must not be already disposed when calling this function.
         /// </remarks>
@@ -93,10 +93,10 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Txd
         /// var fileName = "ryder.txd";
         /// using (var imgArchive = new IMGArchive("gta3.img"))
         /// {
-        ///     RenderWareTexture texture = TxdParser.Parse(imgArchive, fileName);
+        ///     RenderWareTextureDictionary texture = TxdParser.Parse(imgArchive, fileName);
         /// }
         /// </example>
-        public RenderWareTexture Parse(IMGArchive imgArchive, string fileName)
+        public RenderWareTextureDictionary Parse(IMGArchive imgArchive, string fileName)
         {
             IMGArchiveFile? archiveFile = imgArchive.GetFileByName(fileName);
             if (archiveFile.HasValue)
@@ -119,12 +119,12 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Txd
         /// <example>
         /// using (var imgArchive = new IMGArchive("gta3.img"))
         /// {
-        ///     List&lt;RenderWareTexture&gt; textures = TxdParser.ParseAll(imgArchive);
+        ///     List&lt;RenderWareTextureDictionary&gt; textures = TxdParser.ParseAll(imgArchive);
         /// }
         /// </example>
-        public List<RenderWareTexture> ParseAll(IMGArchive imgArchive)
+        public List<RenderWareTextureDictionary> ParseAll(IMGArchive imgArchive)
         {
-            var list = new List<RenderWareTexture>();
+            var list = new List<RenderWareTextureDictionary>();
             for (int i = 0; i < imgArchive.DirEntries.Count; i++)
             {
                 IMGArchiveFile? archiveFile = imgArchive.GetFileById(i, false);
@@ -142,16 +142,16 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Txd
         }
 
         /// <summary>
-        /// Parses a RenderWare TXD texture from a byte array.
+        /// Parses a RenderWare TXD texture dictionary from a byte array.
         /// </summary>
         /// <param name="data">The TXD data to read in binary form.</param>
-        /// <returns>A new RenderWareTexture object containing the parsed TXD data.</returns>
-        public RenderWareTexture Parse(byte[] data)
+        /// <returns>A new RenderWareTextureDictionary object containing the parsed TXD data.</returns>
+        public RenderWareTextureDictionary Parse(byte[] data)
         {
             parserData = data;
             parserOffset = 0;
             ExtendedSection root = NextSection(null);
-            return new RenderWareTexture(root);
+            return new RenderWareTextureDictionary(root);
         }
 
         private byte[] SubByteArray(int length)

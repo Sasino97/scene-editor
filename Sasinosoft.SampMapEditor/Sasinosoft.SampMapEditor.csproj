@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>map-3-multi-size.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="HelixToolkit, Version=2.5.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.2.5.0\lib\netstandard1.1\HelixToolkit.dll</HintPath>
@@ -61,17 +64,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BooleanToVisibilityInverseConverter.cs" />
+    <Compile Include="Utils\BooleanToVisibilityInverseConverter.cs" />
+    <Compile Include="World\GameObject.cs" />
+    <Compile Include="World\GameWorld.cs" />
     <Compile Include="RenderWare\Txd\TextureFormats.cs" />
     <Compile Include="S3TextureCompression\DXT1Decompressor.cs" />
     <Compile Include="IMG\DirEntry.cs" />
     <Compile Include="IMG\IMGArchive.cs" />
     <Compile Include="IMG\IMGArchiveFile.cs" />
     <Compile Include="IMG\UnknownIMGVersionException.cs" />
-    <Compile Include="MainWindowCommands.cs" />
-    <Compile Include="MainWindowViewModel.cs" />
-    <Compile Include="GTASAFilesContainer.cs" />
-    <Compile Include="MouseUtils.cs" />
+    <Compile Include="View\MainWindowCommands.cs" />
+    <Compile Include="View\MainWindowViewModel.cs" />
+    <Compile Include="Utils\GTASAFilesContainer.cs" />
+    <Compile Include="Utils\MouseUtils.cs" />
     <Compile Include="RenderWare\Dff\AnimPluginDataSection.cs" />
     <Compile Include="RenderWare\Dff\AtomicDataSection.cs" />
     <Compile Include="RenderWare\Dff\ClumpDataSection.cs" />
@@ -87,7 +92,7 @@
     <Compile Include="RenderWare\Dff\MaterialDataSection.cs" />
     <Compile Include="RenderWare\Dff\MaterialListDataSection.cs" />
     <Compile Include="RenderWare\Dff\MaterialSplitDataSection.cs" />
-    <Compile Include="RenderWare\RenderWareTexture.cs" />
+    <Compile Include="RenderWare\RenderWareTextureDictionary.cs" />
     <Compile Include="RenderWare\Section.cs" />
     <Compile Include="RenderWare\SectionType.cs" />
     <Compile Include="RenderWare\DataSection.cs" />
@@ -97,12 +102,12 @@
     <Compile Include="RenderWare\Txd\TextureNativeDataSection.cs" />
     <Compile Include="RenderWare\Txd\TxdParser.cs" />
     <Compile Include="RenderWare\Txd\TxdParsingException.cs" />
-    <Compile Include="SettingsWindow.xaml.cs">
+    <Compile Include="View\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingsWindowViewModel.cs" />
-    <Compile Include="ViewModel.cs" />
-    <Page Include="MainWindow.xaml">
+    <Compile Include="View\SettingsWindowViewModel.cs" />
+    <Compile Include="Utils\ViewModel.cs" />
+    <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -110,11 +115,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="SettingsWindow.xaml">
+    <Page Include="View\SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -152,7 +157,9 @@
   <ItemGroup>
     <None Include="RenderWare\readme.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="map-3-multi-size.ico" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="S3TextureCompression\readme.txt" />
   </ItemGroup>
