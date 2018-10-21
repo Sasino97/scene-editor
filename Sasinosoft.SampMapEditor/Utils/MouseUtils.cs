@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Sasinosoft.SampMapEditor
+namespace Sasinosoft.SampMapEditor.Utils
 {
     public static class MouseUtils
     {

@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Sasinosoft.SampMapEditor
+namespace Sasinosoft.SampMapEditor.Utils
 {
     public class BooleanToVisibilityInverseConverter : IValueConverter
     {

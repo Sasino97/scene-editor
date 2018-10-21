@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
-namespace Sasinosoft.SampMapEditor
+namespace Sasinosoft.SampMapEditor.Utils
 {
     public static class GTASAFilesContainer
     {

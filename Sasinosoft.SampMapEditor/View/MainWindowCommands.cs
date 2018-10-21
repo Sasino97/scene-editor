@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace Sasinosoft.SampMapEditor
+namespace Sasinosoft.SampMapEditor.View
 {
     public static class MainWindowCommands
     {

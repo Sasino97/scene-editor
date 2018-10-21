@@ -7,12 +7,12 @@ using System.Windows.Media.Media3D;
 
 namespace Sasinosoft.SampMapEditor.RenderWare
 {
-    public class RenderWareTexture
+    public class RenderWareTextureDictionary
     {
         public Dictionary<string, Material> MaterialDictionary { get; } 
             = new Dictionary<string, Material>();
 
-        public RenderWareTexture(ExtendedSection clump)
+        public RenderWareTextureDictionary(ExtendedSection clump)
         {
             SetTextureData(clump);
         }

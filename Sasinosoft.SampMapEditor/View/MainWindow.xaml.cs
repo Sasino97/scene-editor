@@ -1,18 +1,18 @@
 ﻿using Sasinosoft.SampMapEditor.IMG;
+using Sasinosoft.SampMapEditor.RenderWare;
 using Sasinosoft.SampMapEditor.RenderWare.Dff;
 using Sasinosoft.SampMapEditor.RenderWare.Txd;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
-namespace Sasinosoft.SampMapEditor
+namespace Sasinosoft.SampMapEditor.View
 {
     public partial class MainWindow : Window
     {
         public MainWindowViewModel ViewModel { get; private set; }
-
-        private Point centerOfViewport;
 
         public MainWindow()
         {
@@ -59,51 +59,34 @@ namespace Sasinosoft.SampMapEditor
             }
         }
 
-        public void OnViewportMouseDown(object sender, MouseButtonEventArgs e)
+        private void OnViewportPreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if(e.ChangedButton == MouseButton.Left)
+            {
+                var rayMeshResult = VisualTreeHelper.HitTest(vp3d, e.GetPosition(vp3d))
+                    as RayMeshGeometry3DHitTestResult;
+
+                if(rayMeshResult != null)
+                {
+                    foreach(Visual3D visual in vp3d.Children)
+                    {
+                        if (rayMeshResult.VisualHit is RenderWareModel rwModel)
+                        {
+                            rwModel = (RenderWareModel)rayMeshResult.VisualHit;
+                            rwModel.IsSelected = true;
+                            break;
+                        }
+                    }
+                }
+                e.Handled = true;
+            }
+        }
+
+        private void OnViewportPreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
             {
-                // TODO: (selection)
-            }
-            else if(e.ChangedButton == MouseButton.Middle)
-            {
-                centerOfViewport = canvas.PointToScreen(new Point(canvas.ActualWidth / 2, canvas.ActualHeight / 2));
-                MouseUtils.SetPosition(centerOfViewport);
-                Cursor = Cursors.None;
-            }
-        }
 
-        public void OnViewportMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                // TODO: (selection)
-            }
-        }
-
-        public void OnViewportMouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.MiddleButton == MouseButtonState.Pressed)
-            {
-                Point relativePos = Mouse.GetPosition(canvas);
-                Point actualRelativePos = new Point(relativePos.X - canvas.ActualWidth / 2,
-                                                    canvas.ActualHeight / 2 - relativePos.Y);
-
-                ViewModel.RotateCamera(-(actualRelativePos.X / 200), actualRelativePos.Y / 200);
-                MouseUtils.SetPosition(centerOfViewport);
-            }
-        }
-
-        public void OnViewportMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            ViewModel.ZoomCamera(e.Delta / 110);
-        }
-
-        public void OnMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Middle)
-            {
-                Cursor = Cursors.Arrow;
             }
         }
 

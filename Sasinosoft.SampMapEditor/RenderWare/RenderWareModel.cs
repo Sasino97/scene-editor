@@ -8,14 +8,42 @@ namespace Sasinosoft.SampMapEditor.RenderWare
 {
     public class RenderWareModel : ModelVisual3D
     {
+        private static readonly Color selectionColor = Color.FromArgb(100, 30, 255, 30);
+
         private ExtendedSection clump;
         private Dictionary<string, List<MaterialGroup>> MaterialGroupDictionary = new Dictionary<string, List<MaterialGroup>>();
+        private bool isSelected = false;
 
         public RenderWareModel() : base() { }
         public RenderWareModel(ExtendedSection clump) : base()
         {
             this.clump = clump;
             SetModelData();
+        }
+
+        public bool IsSelected
+        {
+            get
+            {
+                return isSelected;
+            }
+            set
+            {
+                if(isSelected != value)
+                {
+                    isSelected = value;
+                    foreach (List<MaterialGroup> groupList in MaterialGroupDictionary.Values)
+                    {
+                        foreach(MaterialGroup group in groupList)
+                        {
+                            if (value)
+                                group.Children.Add(new DiffuseMaterial(new SolidColorBrush(selectionColor)));
+                            else
+                                group.Children.RemoveAt(group.Children.Count - 1);
+                        }
+                    }
+                }
+            }
         }
         
         private void SetModelData()
@@ -70,8 +98,10 @@ namespace Sasinosoft.SampMapEditor.RenderWare
 
                                 if(!MaterialGroupDictionary.ContainsKey(textureInfo.String))
                                 {
-                                    var list = new List<MaterialGroup>();
-                                    list.Add(matGroup);
+                                    var list = new List<MaterialGroup>
+                                    {
+                                        matGroup
+                                    };
                                     MaterialGroupDictionary.Add(textureInfo.String, list);
                                 }
                                 else
@@ -88,17 +118,18 @@ namespace Sasinosoft.SampMapEditor.RenderWare
             model3dGroup.Children.Add(new AmbientLight());
         }
 
-        public void SetTextureData(RenderWareTexture txd)
+        public void SetTextureData(RenderWareTextureDictionary txd)
         {
             foreach(string name in MaterialGroupDictionary.Keys)
             {
                 List<MaterialGroup> groupList = MaterialGroupDictionary[name];
-                Material material;
 
-                if(txd.MaterialDictionary.TryGetValue(name, out material))
+                if (txd.MaterialDictionary.TryGetValue(name, out Material material))
                 {
-                    foreach(MaterialGroup group in groupList)
+                    foreach (MaterialGroup group in groupList)
+                    {
                         group.Children.Add(material);
+                    }
                 }
             }
         }
