@@ -8,45 +8,51 @@ namespace Sasinosoft.SampMapEditor.RenderWare
 {
     public class RenderWareModel : ModelVisual3D
     {
-        private static readonly Color selectionColor = Color.FromArgb(100, 30, 255, 30);
-
-        private ExtendedSection clump;
-        private Dictionary<string, List<MaterialGroup>> MaterialGroupDictionary = new Dictionary<string, List<MaterialGroup>>();
-        private bool isSelected = false;
-
-        public RenderWareModel() : base() { }
-        public RenderWareModel(ExtendedSection clump) : base()
+        private struct MaterialInfo
         {
-            this.clump = clump;
-            SetModelData();
+            private static readonly Color selectionColor = Color.FromArgb(100, 30, 255, 30);
+            public MaterialGroup MaterialGroup;
+            public DiffuseMaterial SelectionMaterial;
+
+            public void SetIsSelected(bool isSelected)
+            {
+                if (isSelected)
+                {
+                    SelectionMaterial = new DiffuseMaterial(new SolidColorBrush(selectionColor));
+                    MaterialGroup.Children.Add(SelectionMaterial);
+                }
+                else
+                {
+                    if (SelectionMaterial != null)
+                        MaterialGroup.Children.Remove(SelectionMaterial);
+                }
+            }
         }
 
+        private Dictionary<string, List<MaterialInfo>> MaterialGroupDictionary = new Dictionary<string, List<MaterialInfo>>();
+
+        private bool isSelected = false;
         public bool IsSelected
         {
-            get
-            {
-                return isSelected;
-            }
+            get { return isSelected; }
             set
             {
-                if(isSelected != value)
+                if (isSelected != value)
                 {
                     isSelected = value;
-                    foreach (List<MaterialGroup> groupList in MaterialGroupDictionary.Values)
+                    foreach (List<MaterialInfo> materialInfoList in MaterialGroupDictionary.Values)
                     {
-                        foreach(MaterialGroup group in groupList)
+                        foreach (MaterialInfo materialInfo in materialInfoList)
                         {
-                            if (value)
-                                group.Children.Add(new DiffuseMaterial(new SolidColorBrush(selectionColor)));
-                            else
-                                group.Children.RemoveAt(group.Children.Count - 1);
+                            materialInfo.SetIsSelected(value);
                         }
                     }
                 }
             }
         }
-        
-        private void SetModelData()
+
+        public RenderWareModel() : base() { }
+        public RenderWareModel(ExtendedSection clump) : base()
         {
             // populate
             var model3dGroup = new Model3DGroup();
@@ -56,7 +62,7 @@ namespace Sasinosoft.SampMapEditor.RenderWare
 
             foreach (Section geometryList in clump.GetChildren(SectionType.RwGeometryList))
             {
-                foreach(Section geometry in ((ExtendedSection)geometryList).GetChildren(SectionType.RwGeometry))
+                foreach (Section geometry in ((ExtendedSection)geometryList).GetChildren(SectionType.RwGeometry))
                 {
                     var geometryInfo = (GeometryDataSection)((ExtendedSection)geometry).GetChild(0);
                     var model3d = new GeometryModel3D();
@@ -96,18 +102,16 @@ namespace Sasinosoft.SampMapEditor.RenderWare
                             {
                                 var textureInfo = (StringDataSection)((ExtendedSection)texture).GetChild(1);
 
-                                if(!MaterialGroupDictionary.ContainsKey(textureInfo.String))
+                                if (!MaterialGroupDictionary.ContainsKey(textureInfo.String))
                                 {
-                                    var list = new List<MaterialGroup>
-                                    {
-                                        matGroup
-                                    };
+                                    var list = new List<MaterialInfo>
+                                        { new MaterialInfo() { MaterialGroup = matGroup } };
                                     MaterialGroupDictionary.Add(textureInfo.String, list);
                                 }
                                 else
                                 {
                                     var list = MaterialGroupDictionary[textureInfo.String];
-                                    list.Add(matGroup);
+                                    list.Add(new MaterialInfo() { MaterialGroup = matGroup });
                                 }
                             }
                         }
@@ -117,18 +121,18 @@ namespace Sasinosoft.SampMapEditor.RenderWare
             }
             model3dGroup.Children.Add(new AmbientLight());
         }
-
+        
         public void SetTextureData(RenderWareTextureDictionary txd)
         {
             foreach(string name in MaterialGroupDictionary.Keys)
             {
-                List<MaterialGroup> groupList = MaterialGroupDictionary[name];
+                List<MaterialInfo> materialInfoList = MaterialGroupDictionary[name];
 
                 if (txd.MaterialDictionary.TryGetValue(name, out Material material))
                 {
-                    foreach (MaterialGroup group in groupList)
+                    foreach (MaterialInfo info in materialInfoList)
                     {
-                        group.Children.Add(material);
+                        info.MaterialGroup.Children.Add(material);
                     }
                 }
             }
