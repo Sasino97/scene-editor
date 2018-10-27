@@ -14,12 +14,6 @@ namespace Sasinosoft.SampMapEditor.RenderWare
 
         public RenderWareTextureDictionary(ExtendedSection clump)
         {
-            SetTextureData(clump);
-        }
-
-        public void SetTextureData(ExtendedSection clump)
-        {
-            MaterialDictionary.Clear();
             foreach(Section section in clump.GetChildren(SectionType.RwTextureNative))
             {
                 var textureInfo = (TextureNativeDataSection) ((ExtendedSection)section).GetChild(0);

@@ -22,7 +22,9 @@ namespace Sasinosoft.SampMapEditor.World
         public bool IsDefault { get; set; }
 
         /// <summary>
-        /// Gets 
+        /// Gets a valure representing the last time this object passed the stream check. 
+        /// This value is store so that objects which are not being streamed in a long time
+        /// can be removed from memory completely, forcing to it be recreated again if needed.
         /// </summary>
         public DateTime LastStreamTime { get; set; }
     }
