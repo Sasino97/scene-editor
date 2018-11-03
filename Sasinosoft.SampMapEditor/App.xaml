@@ -5,5 +5,11 @@
              StartupUri="View/MainWindow.xaml">
     <Application.Resources>
         <properties:Settings x:Key="Settings" />
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="MinHeight" Value="24"/>
+        </Style>
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
     </Application.Resources>
 </Application>
