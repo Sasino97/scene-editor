@@ -1,4 +1,10 @@
-﻿using Sasinosoft.SampMapEditor.RenderWare.Txd;
+﻿/* 
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ */
+using ManagedSquish;
+using Sasinosoft.SampMapEditor.RenderWare.Txd;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Media;
@@ -26,10 +32,48 @@ namespace Sasinosoft.SampMapEditor.RenderWare
                 if (textureInfo.D3DTextureFormat == TextureFormats.DXT1)
                 {
                     // decode dxt1
+                    byte[] decompressedImage = Squish.DecompressImage(
+                        textureInfo.Data.ToArray(),
+                        (int)textureInfo.Width,
+                        (int)textureInfo.Height,
+                        SquishFlags.Dxt1
+                    );
+
+                    PixelFormat pixelFormat = PixelFormats.Bgr565;
+                    int width = (int)textureInfo.Width;
+                    int height = (int)textureInfo.Height;
+                    int rawStride = (width * pixelFormat.BitsPerPixel + 7) / 8;
+
+                    if (rawStride * height != textureInfo.DataSize)
+                    {
+                        Debug.WriteLine("Data Length Error. {0} != {1}",
+                            rawStride * height,
+                            textureInfo.DataSize);
+                        return;
+                    }
+
+                    BitmapSource bmpSrc = BitmapSource.Create(
+                        width,
+                        height,
+                        96,
+                        96,
+                        pixelFormat,
+                        null,
+                        decompressedImage,
+                        rawStride
+                    );
+
+                    brush.ImageSource = bmpSrc;
                 }
                 else if (textureInfo.D3DTextureFormat == TextureFormats.DXT3)
                 {
                     // decode dxt3
+                    byte[] decompressedImage = Squish.DecompressImage(
+                        textureInfo.Data.ToArray(),
+                        (int)textureInfo.Width,
+                        (int)textureInfo.Height,
+                        SquishFlags.Dxt3
+                    );
                 }
                 else
                 {
