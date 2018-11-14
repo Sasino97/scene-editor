@@ -68,7 +68,6 @@
     <Compile Include="World\GameObject.cs" />
     <Compile Include="World\GameWorld.cs" />
     <Compile Include="RenderWare\Txd\TextureFormats.cs" />
-    <Compile Include="S3TextureCompression\DXT1Decompressor.cs" />
     <Compile Include="IMG\DirEntry.cs" />
     <Compile Include="IMG\IMGArchive.cs" />
     <Compile Include="IMG\IMGArchiveFile.cs" />
@@ -159,9 +158,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="map-3-multi-size.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="S3TextureCompression\readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
