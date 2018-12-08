@@ -64,6 +64,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="IPL\IPLElement.cs" />
     <Compile Include="Utils\BooleanToVisibilityInverseConverter.cs" />
     <Compile Include="World\GameObject.cs" />
     <Compile Include="World\GameWorld.cs" />
