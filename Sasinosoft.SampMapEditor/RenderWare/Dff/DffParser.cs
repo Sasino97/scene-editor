@@ -155,7 +155,7 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Dff
         {
             parserData = data;
             parserOffset = 0;
-            ExtendedSection root = NextSection(null);
+            ExtendedSection root = CreateTree();
             return new RenderWareModel(root);
         }
 
@@ -201,455 +201,472 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Dff
             return str;
         }
 
-        private ExtendedSection NextSection(ExtendedSection parent)
+        private ExtendedSection CreateTree()
         {
-            // 1. Check whether it's possible to create 
-            //    other sections inside the parent Section
-            if (parent != null)
+            ExtendedSection root = null;
+            ExtendedSection parent = null;
+
+            while (true)
             {
-                var bytesReadSinceParentCreation = (parserOffset - parent.CreationOffset);
-                if (bytesReadSinceParentCreation == parent.Size)
+                // 1. Check whether it's possible to create 
+                //    other sections inside the parent Section
+                if (parent != null)
                 {
-                    // go up in the tree
-                    if(parent.Parent != null)
-                        return NextSection(parent.Parent);
-                    //else
-                    //    Debug.Write(parent.GetTreeString());
-                    return parent;
+                    var bytesReadSinceParentCreation = (parserOffset - parent.CreationOffset);
+                    if (bytesReadSinceParentCreation == parent.Size)
+                    {
+                        // 1.1 Attempt to navigate the tree up, by setting
+                        // the parent variable to its own Parent. If this 
+                        // is not possible, then break out of the loop.
+                        if (parent.Parent != null)
+                        {
+                            parent = parent.Parent;
+                            continue;
+                        }
+                        //else
+                        //    Debug.Write(parent.GetTreeString());
+                        break;
+                    }
+                    else if (bytesReadSinceParentCreation > parent.Size)
+                    {
+                        // 1.2 File structure error. Throw an exception.
+                        throw new DffParsingException();
+                    }
                 }
-                else if(bytesReadSinceParentCreation > parent.Size)
+
+                // 2. Read the header information
+                SectionType sectionType = (SectionType)NextUInt32();
+                uint sectionSize = NextUInt32();
+                uint sectionVersion = NextUInt32();
+                int startOffset = parserOffset;
+
+                // 3. Determine the type of section
+                switch (sectionType)
                 {
-                    // file structure error
-                    throw new DffParsingException(); 
-                }
-            }
+                    // 3.1 In case of a complex section, we create a new
+                    // ExtendedSection object, and we call this function
+                    // recursively with 'parent' set to the new instance
+                    case SectionType.RwClump:
+                    case SectionType.RwFrameList:
+                    case SectionType.RwExtension:
+                    case SectionType.RwGeometryList:
+                    case SectionType.RwGeometry:
+                    case SectionType.RwMaterialList:
+                    case SectionType.RwMaterial:
+                    case SectionType.RwTexture:
+                    case SectionType.RwAtomic:
+                    case SectionType.RwLight:
+                        var extendedSection = new ExtendedSection()
+                        {
+                            Type = sectionType,
+                            Size = sectionSize,
+                            Version = sectionVersion,
+                            CreationOffset = parserOffset
+                        };
 
-            // 2. Read the header information
-            SectionType sectionType = (SectionType)NextUInt32();
-            UInt32 sectionSize = NextUInt32();
-            UInt32 sectionVersion = NextUInt32();
-            int startOffset = parserOffset;
+                        if (root == null)
+                            root = extendedSection;
 
-            // 3. Determine the type of section
-            switch (sectionType)
-            {
-                // 3.1 In case of a complex section, we create a new
-                // ExtendedSection object, and we call this function
-                // recursively with 'parent' set to the new instance
-                case SectionType.RwClump:
-                case SectionType.RwFrameList:
-                case SectionType.RwExtension:
-                case SectionType.RwGeometryList:
-                case SectionType.RwGeometry:
-                case SectionType.RwMaterialList:
-                case SectionType.RwMaterial:
-                case SectionType.RwTexture:
-                case SectionType.RwAtomic:
-                case SectionType.RwLight:
-                    var extendedSection = new ExtendedSection()
-                    {
-                        Type = sectionType,
-                        Size = sectionSize,
-                        Version = sectionVersion,
-                        CreationOffset = parserOffset
-                    };
-                    if (parent != null)
-                        parent.AddChild(extendedSection);
+                        if (parent != null)
+                            parent.AddChild(extendedSection);
 
-                    return NextSection(extendedSection);
+                        parent = extendedSection;
+                        continue;
 
-                // 3.2 In case of a data section, we need to know the 
-                // parent Section type in order to instantiate the 
-                // appropriate class and fill it with data in a
-                // meaningful way
-                case SectionType.RwData:
-                    switch (parent.Type) // parent cannot be null
-                    {
-                        case SectionType.RwClump:
-                            var clumpDataSection = new ClumpDataSection()
-                            {
-                                Type = sectionType,
-                                Size = sectionSize,
-                                Version = sectionVersion,
-                                //
-                                ObjectCount = NextUInt32(),
-                                Unknown1 = NextUInt32(),
-                                Unknown2 = NextUInt32()
-                            };
-
-                            if (parserOffset != (startOffset + (int)clumpDataSection.Size))
-                            {
-                                parserOffset = (startOffset + (int)clumpDataSection.Size);
-                                clumpDataSection.IsDamaged = true;
-                            }
-                            parent.AddChild(clumpDataSection);
-                            return NextSection(parent);
-
-                        case SectionType.RwFrameList:
-                            var frameListDataSection = new FrameListDataSection()
-                            {
-                                Type = sectionType,
-                                Size = sectionSize,
-                                Version = sectionVersion,
-                                //
-                                FrameCount = NextUInt32()
-                            };
-
-                            for (int i = 0; i < frameListDataSection.FrameCount; i++)
-                            {
-                                frameListDataSection.FrameInformation.Add(new FrameListDataSection.FrameStruct()
+                    // 3.2 In case of a data section, we need to know the 
+                    // parent Section type in order to instantiate the 
+                    // appropriate class and fill it with data in a
+                    // meaningful way
+                    case SectionType.RwData:
+                        switch (parent.Type) // parent cannot be null
+                        {
+                            case SectionType.RwClump:
+                                var clumpDataSection = new ClumpDataSection()
                                 {
-                                    RotationalMatrix = new float[,]
+                                    Type = sectionType,
+                                    Size = sectionSize,
+                                    Version = sectionVersion,
+                                    //
+                                    ObjectCount = NextUInt32(),
+                                    Unknown1 = NextUInt32(),
+                                    Unknown2 = NextUInt32()
+                                };
+
+                                if (parserOffset != (startOffset + (int)clumpDataSection.Size))
+                                {
+                                    parserOffset = (startOffset + (int)clumpDataSection.Size);
+                                    clumpDataSection.IsDamaged = true;
+                                }
+                                parent.AddChild(clumpDataSection);
+                                continue;
+
+                            case SectionType.RwFrameList:
+                                var frameListDataSection = new FrameListDataSection()
+                                {
+                                    Type = sectionType,
+                                    Size = sectionSize,
+                                    Version = sectionVersion,
+                                    //
+                                    FrameCount = NextUInt32()
+                                };
+
+                                for (int i = 0; i < frameListDataSection.FrameCount; i++)
+                                {
+                                    frameListDataSection.FrameInformation.Add(new FrameListDataSection.FrameStruct()
                                     {
+                                        RotationalMatrix = new float[,]
+                                        {
                                         { NextFloat(), NextFloat(), NextFloat() },
                                         { NextFloat(), NextFloat(), NextFloat() },
                                         { NextFloat(), NextFloat(), NextFloat() }
-                                    },
-                                    CoordinatesOffset = new float[]
-                                    {
+                                        },
+                                        CoordinatesOffset = new float[]
+                                        {
                                         NextFloat(),
                                         NextFloat(),
                                         NextFloat()
-                                    },
-                                    Parent = NextUInt32(),
-                                    Unknown1 = NextUInt32()
-                                });
-                            }
-                            if (parserOffset != (startOffset + (int)frameListDataSection.Size))
-                            {
-                                parserOffset = (startOffset + (int)frameListDataSection.Size);
-                                frameListDataSection.IsDamaged = true;
-                            }
-                            parent.AddChild(frameListDataSection);
-                            return NextSection(parent);
-
-                        case SectionType.RwGeometryList:
-                            var geometryListDataSection = new GeometryListDataSection()
-                            {
-                                Type = sectionType,
-                                Size = sectionSize,
-                                Version = sectionVersion,
-                                //
-                                GeometryCount = NextUInt32()
-                            };
-                            if (parserOffset != (startOffset + (int)geometryListDataSection.Size))
-                            {
-                                parserOffset = (startOffset + (int)geometryListDataSection.Size);
-                                geometryListDataSection.IsDamaged = true;
-                            }
-                            parent.AddChild(geometryListDataSection);
-                            return NextSection(parent);
-
-                        case SectionType.RwGeometry:
-                            var geometryDataSection = new GeometryDataSection()
-                            {
-                                Type = sectionType,
-                                Size = sectionSize,
-                                Version = sectionVersion,
-                                //
-                                Flags = (GeometryDataFlags)NextUInt16(),
-                                UVMapCount = NextByte(),
-                                HasNativeGeometry = NextByte(),
-                                TriangleCount = NextUInt32(),
-                                VertexCount = NextUInt32(),
-                                MorphCount = NextUInt32()
-                            };
-
-                            if (geometryDataSection.Version < 0x34000)
-                                NextString(12);
-
-                            if(geometryDataSection.HasNativeGeometry == 0)
-                            {
-                                if ((geometryDataSection.Flags & GeometryDataFlags.RwObjectVertexColor) != GeometryDataFlags.None)
-                                {
-                                    for (int i = 0; i < geometryDataSection.VertexCount; i++)
-                                    {
-                                        geometryDataSection.VertexColors.Add(new GeometryDataSection.VertexColor()
-                                        {
-                                            R = NextByte(),
-                                            G = NextByte(),
-                                            B = NextByte(),
-                                            A = NextByte(),
-                                        });
-                                    }
-                                }
-
-                                if ((geometryDataSection.Flags & GeometryDataFlags.RwObjectVertexUv) != GeometryDataFlags.None)
-                                {
-                                    for (int i = 0; i < geometryDataSection.VertexCount; i++)
-                                    {
-                                        geometryDataSection.VertexUVs.Add(new GeometryDataSection.VertexUV()
-                                        {
-                                            U = NextFloat(),
-                                            V = NextFloat()
-                                        });
-                                    }
-                                    geometryDataSection.UVMapCount = 1;
-                                }
-
-                                if ((geometryDataSection.Flags & GeometryDataFlags.RwObjectVertexTextured) != GeometryDataFlags.None)
-                                {
-                                    for (int i = 0; i < geometryDataSection.UVMapCount; i++)
-                                    {
-                                        geometryDataSection.VertexUVs.Add(new GeometryDataSection.VertexUV()
-                                        {
-                                            U = NextFloat(),
-                                            V = NextFloat()
-                                        });
-                                    }
-                                }
-
-                                for (int i = 0; i < geometryDataSection.TriangleCount; i++)
-                                {
-                                    geometryDataSection.Triangles.Add(new GeometryDataSection.Triangle()
-                                    {
-                                        Vertex2 = NextUInt16(),
-                                        Vertex1 = NextUInt16(),
-                                        Flags = NextUInt16(),
-                                        Vertex3 = NextUInt16()
+                                        },
+                                        Parent = NextUInt32(),
+                                        Unknown1 = NextUInt32()
                                     });
                                 }
-                            }
-
-                            geometryDataSection.BoundingSphereX = NextFloat();
-                            geometryDataSection.BoundingSphereY = NextFloat();
-                            geometryDataSection.BoundingSphereZ = NextFloat();
-                            geometryDataSection.BoundingSphereRadius = NextFloat();
-                            geometryDataSection.HasPosition = NextUInt32();
-                            geometryDataSection.HasNormals = NextUInt32();
-
-                            if (geometryDataSection.HasNativeGeometry == 0)
-                            {
-                                for (int i = 0; i < geometryDataSection.VertexCount; i++)
+                                if (parserOffset != (startOffset + (int)frameListDataSection.Size))
                                 {
-                                    geometryDataSection.Vertices.Add(new GeometryDataSection.Vertex()
+                                    parserOffset = (startOffset + (int)frameListDataSection.Size);
+                                    frameListDataSection.IsDamaged = true;
+                                }
+                                parent.AddChild(frameListDataSection);
+                                continue;
+
+                            case SectionType.RwGeometryList:
+                                var geometryListDataSection = new GeometryListDataSection()
+                                {
+                                    Type = sectionType,
+                                    Size = sectionSize,
+                                    Version = sectionVersion,
+                                    //
+                                    GeometryCount = NextUInt32()
+                                };
+                                if (parserOffset != (startOffset + (int)geometryListDataSection.Size))
+                                {
+                                    parserOffset = (startOffset + (int)geometryListDataSection.Size);
+                                    geometryListDataSection.IsDamaged = true;
+                                }
+                                parent.AddChild(geometryListDataSection);
+                                continue;
+
+                            case SectionType.RwGeometry:
+                                var geometryDataSection = new GeometryDataSection()
+                                {
+                                    Type = sectionType,
+                                    Size = sectionSize,
+                                    Version = sectionVersion,
+                                    //
+                                    Flags = (GeometryDataFlags)NextUInt16(),
+                                    UVMapCount = NextByte(),
+                                    HasNativeGeometry = NextByte(),
+                                    TriangleCount = NextUInt32(),
+                                    VertexCount = NextUInt32(),
+                                    MorphCount = NextUInt32()
+                                };
+
+                                if (geometryDataSection.Version < 0x34000)
+                                    NextString(12);
+
+                                if (geometryDataSection.HasNativeGeometry == 0)
+                                {
+                                    if ((geometryDataSection.Flags & GeometryDataFlags.RwObjectVertexColor) != GeometryDataFlags.None)
                                     {
-                                        X = NextFloat(),
-                                        Y = NextFloat(),
-                                        Z = NextFloat()
-                                    });
+                                        for (int i = 0; i < geometryDataSection.VertexCount; i++)
+                                        {
+                                            geometryDataSection.VertexColors.Add(new GeometryDataSection.VertexColor()
+                                            {
+                                                R = NextByte(),
+                                                G = NextByte(),
+                                                B = NextByte(),
+                                                A = NextByte(),
+                                            });
+                                        }
+                                    }
+
+                                    if ((geometryDataSection.Flags & GeometryDataFlags.RwObjectVertexUv) != GeometryDataFlags.None)
+                                    {
+                                        for (int i = 0; i < geometryDataSection.VertexCount; i++)
+                                        {
+                                            geometryDataSection.VertexUVs.Add(new GeometryDataSection.VertexUV()
+                                            {
+                                                U = NextFloat(),
+                                                V = NextFloat()
+                                            });
+                                        }
+                                        geometryDataSection.UVMapCount = 1;
+                                    }
+
+                                    if ((geometryDataSection.Flags & GeometryDataFlags.RwObjectVertexTextured) != GeometryDataFlags.None)
+                                    {
+                                        for (int i = 0; i < geometryDataSection.UVMapCount; i++)
+                                        {
+                                            geometryDataSection.VertexUVs.Add(new GeometryDataSection.VertexUV()
+                                            {
+                                                U = NextFloat(),
+                                                V = NextFloat()
+                                            });
+                                        }
+                                    }
+
+                                    for (int i = 0; i < geometryDataSection.TriangleCount; i++)
+                                    {
+                                        geometryDataSection.Triangles.Add(new GeometryDataSection.Triangle()
+                                        {
+                                            Vertex2 = NextUInt16(),
+                                            Vertex1 = NextUInt16(),
+                                            Flags = NextUInt16(),
+                                            Vertex3 = NextUInt16()
+                                        });
+                                    }
                                 }
 
-                                if ((geometryDataSection.Flags & GeometryDataFlags.RwObjectVertexNormal)
-                                    != GeometryDataFlags.None)
+                                geometryDataSection.BoundingSphereX = NextFloat();
+                                geometryDataSection.BoundingSphereY = NextFloat();
+                                geometryDataSection.BoundingSphereZ = NextFloat();
+                                geometryDataSection.BoundingSphereRadius = NextFloat();
+                                geometryDataSection.HasPosition = NextUInt32();
+                                geometryDataSection.HasNormals = NextUInt32();
+
+                                if (geometryDataSection.HasNativeGeometry == 0)
                                 {
                                     for (int i = 0; i < geometryDataSection.VertexCount; i++)
                                     {
-                                        geometryDataSection.Normals.Add(new GeometryDataSection.Normal()
+                                        geometryDataSection.Vertices.Add(new GeometryDataSection.Vertex()
                                         {
                                             X = NextFloat(),
                                             Y = NextFloat(),
                                             Z = NextFloat()
                                         });
                                     }
+
+                                    if ((geometryDataSection.Flags & GeometryDataFlags.RwObjectVertexNormal)
+                                        != GeometryDataFlags.None)
+                                    {
+                                        for (int i = 0; i < geometryDataSection.VertexCount; i++)
+                                        {
+                                            geometryDataSection.Normals.Add(new GeometryDataSection.Normal()
+                                            {
+                                                X = NextFloat(),
+                                                Y = NextFloat(),
+                                                Z = NextFloat()
+                                            });
+                                        }
+                                    }
                                 }
-                            }
-                            if(parserOffset != (startOffset + (int)geometryDataSection.Size))
-                            {
-                                parserOffset = (startOffset + (int)geometryDataSection.Size);
-                                geometryDataSection.IsDamaged = true;
-                            }
-                            parent.AddChild(geometryDataSection);
-                            return NextSection(parent);
-
-                        case SectionType.RwMaterialList:
-                            var materialListDataSection = new MaterialListDataSection()
-                            {
-                                Type = sectionType,
-                                Size = sectionSize,
-                                Version = sectionVersion,
-                                //
-                                MaterialCount = NextUInt32(),
-                                Unknown1 = NextUInt32()
-                            };
-                            if (parserOffset != (startOffset + (int)materialListDataSection.Size))
-                            {
-                                parserOffset = (startOffset + (int)materialListDataSection.Size);
-                                materialListDataSection.IsDamaged = true;
-                            }
-                            parent.AddChild(materialListDataSection);
-                            return NextSection(parent);
-
-                        case SectionType.RwMaterial:
-                            var materialDataSection = new MaterialDataSection()
-                            {
-                                Type = sectionType,
-                                Size = sectionSize,
-                                Version = sectionVersion,
-                                //
-                                Unknown1 = NextUInt32(),
-                                Color = new MaterialDataSection.MaterialColor()
+                                if (parserOffset != (startOffset + (int)geometryDataSection.Size))
                                 {
-                                    R = NextByte(),
-                                    G = NextByte(),
-                                    B = NextByte(),
-                                    A = NextByte()
-                                },
-                                Unknown2 = NextUInt32(),
-                                TextureCount = NextUInt32(),
-                                Unknown3 = new float[]
+                                    parserOffset = (startOffset + (int)geometryDataSection.Size);
+                                    geometryDataSection.IsDamaged = true;
+                                }
+                                parent.AddChild(geometryDataSection);
+                                continue;
+
+                            case SectionType.RwMaterialList:
+                                var materialListDataSection = new MaterialListDataSection()
                                 {
+                                    Type = sectionType,
+                                    Size = sectionSize,
+                                    Version = sectionVersion,
+                                    //
+                                    MaterialCount = NextUInt32(),
+                                    Unknown1 = NextUInt32()
+                                };
+                                if (parserOffset != (startOffset + (int)materialListDataSection.Size))
+                                {
+                                    parserOffset = (startOffset + (int)materialListDataSection.Size);
+                                    materialListDataSection.IsDamaged = true;
+                                }
+                                parent.AddChild(materialListDataSection);
+                                continue;
+
+                            case SectionType.RwMaterial:
+                                var materialDataSection = new MaterialDataSection()
+                                {
+                                    Type = sectionType,
+                                    Size = sectionSize,
+                                    Version = sectionVersion,
+                                    //
+                                    Unknown1 = NextUInt32(),
+                                    Color = new MaterialDataSection.MaterialColor()
+                                    {
+                                        R = NextByte(),
+                                        G = NextByte(),
+                                        B = NextByte(),
+                                        A = NextByte()
+                                    },
+                                    Unknown2 = NextUInt32(),
+                                    TextureCount = NextUInt32(),
+                                    Unknown3 = new float[]
+                                    {
                                     NextFloat(),
                                     NextFloat(),
                                     NextFloat()
+                                    }
+                                };
+                                if (parserOffset != (startOffset + (int)materialDataSection.Size))
+                                {
+                                    parserOffset = (startOffset + (int)materialDataSection.Size);
+                                    materialDataSection.IsDamaged = true;
                                 }
-                            };
-                            if (parserOffset != (startOffset + (int)materialDataSection.Size))
-                            {
-                                parserOffset = (startOffset + (int)materialDataSection.Size);
-                                materialDataSection.IsDamaged = true;
-                            }
-                            parent.AddChild(materialDataSection);
-                            return NextSection(parent);
+                                parent.AddChild(materialDataSection);
+                                continue;
 
-                        case SectionType.RwTexture:
-                            var textureDataSection = new TextureDataSection()
-                            {
-                                Type = sectionType,
-                                Size = sectionSize,
-                                Version = sectionVersion,
-                                //
-                                TextureFilterModeFlags = NextUInt16(),
-                                Unknown1 = NextUInt16()
-                            };
-                            if (parserOffset != (startOffset + (int)textureDataSection.Size))
-                            {
-                                parserOffset = (startOffset + (int)textureDataSection.Size);
-                                textureDataSection.IsDamaged = true;
-                            }
-                            parent.AddChild(textureDataSection);
-                            return NextSection(parent);
+                            case SectionType.RwTexture:
+                                var textureDataSection = new TextureDataSection()
+                                {
+                                    Type = sectionType,
+                                    Size = sectionSize,
+                                    Version = sectionVersion,
+                                    //
+                                    TextureFilterModeFlags = NextUInt16(),
+                                    Unknown1 = NextUInt16()
+                                };
+                                if (parserOffset != (startOffset + (int)textureDataSection.Size))
+                                {
+                                    parserOffset = (startOffset + (int)textureDataSection.Size);
+                                    textureDataSection.IsDamaged = true;
+                                }
+                                parent.AddChild(textureDataSection);
+                                continue;
 
-                        case SectionType.RwAtomic:
-                            var atomicDataSection = new AtomicDataSection()
-                            {
-                                Type = sectionType,
-                                Size = sectionSize,
-                                Version = sectionVersion,
-                                //
-                                FrameNumber = NextUInt32(),
-                                GeometryNumber = NextUInt32(),
-                                Unknown1 = NextUInt32(),
-                                Unknown2 = NextUInt32()
-                            };
-                            if (parserOffset != (startOffset + (int)atomicDataSection.Size))
-                            {
-                                parserOffset = (startOffset + (int)atomicDataSection.Size);
-                                atomicDataSection.IsDamaged = true;
-                            }
-                            parent.AddChild(atomicDataSection);
-                            return NextSection(parent);
+                            case SectionType.RwAtomic:
+                                var atomicDataSection = new AtomicDataSection()
+                                {
+                                    Type = sectionType,
+                                    Size = sectionSize,
+                                    Version = sectionVersion,
+                                    //
+                                    FrameNumber = NextUInt32(),
+                                    GeometryNumber = NextUInt32(),
+                                    Unknown1 = NextUInt32(),
+                                    Unknown2 = NextUInt32()
+                                };
+                                if (parserOffset != (startOffset + (int)atomicDataSection.Size))
+                                {
+                                    parserOffset = (startOffset + (int)atomicDataSection.Size);
+                                    atomicDataSection.IsDamaged = true;
+                                }
+                                parent.AddChild(atomicDataSection);
+                                continue;
 
-                        default:
-                            // Unreadable: skip the number of bytes defined in the section header
-                            NextString((int)sectionSize);
-                            return NextSection(parent);
-                    }
-
-                // 3.3 In case of special data formats, we parse their content
-                //     accordingly
-                case SectionType.RwFrame:
-                    var frameSection = new FrameDataSection()
-                    {
-                        Type = sectionType,
-                        Size = sectionSize,
-                        Version = sectionVersion,
-                    };
-                    frameSection.FrameName = NextString((int)frameSection.Size);
-                    if (parserOffset != (startOffset + (int)frameSection.Size))
-                    {
-                        parserOffset = (startOffset + (int)frameSection.Size);
-                        frameSection.IsDamaged = true;
-                    }
-                    parent.AddChild(frameSection);
-                    return NextSection(parent);
-
-                case SectionType.RwString:
-                    var stringDataSection = new StringDataSection()
-                    {
-                        Type = sectionType,
-                        Size = sectionSize,
-                        Version = sectionVersion,
-                    };
-                    stringDataSection.String = NextString((int)stringDataSection.Size);
-                    if (parserOffset != (startOffset + (int)stringDataSection.Size))
-                    {
-                        parserOffset = (startOffset + (int)stringDataSection.Size);
-                        stringDataSection.IsDamaged = true;
-                    }
-                    parent.AddChild(stringDataSection);
-                    return NextSection(parent);
-
-                case SectionType.RwMaterialSplit:
-                    var materialSplitDataSection = new MaterialSplitDataSection()
-                    {
-                        Type = sectionType,
-                        Size = sectionSize,
-                        Version = sectionVersion,
-                        //
-                        FaceType = NextUInt32(),
-                        SplitCount = NextUInt32(),
-                        FaceCount = NextUInt32()
-                    };
-                    for (int i = 0; i < materialSplitDataSection.SplitCount; i++)
-                    {
-                        var split = new MaterialSplitDataSection.Split()
-                        {
-                            IndexCount = NextUInt32(),
-                            Material = NextUInt32(),
-                            Indices = new List<UInt32>()
-                        };
-                        materialSplitDataSection.Splits.Add(split);
-                        for (int j = 0; j < split.IndexCount; j++)
-                        {
-                            split.Indices.Add(NextUInt32());
+                            default:
+                                // Unreadable: skip the number of bytes defined in the section header
+                                NextString((int)sectionSize);
+                                continue;
                         }
-                    }
-                    if (parserOffset != (startOffset + (int)materialSplitDataSection.Size))
-                    {
-                        parserOffset = (startOffset + (int)materialSplitDataSection.Size);
-                        materialSplitDataSection.IsDamaged = true;
-                    }
-                    parent.AddChild(materialSplitDataSection);
-                    return NextSection(parent);
 
-                case SectionType.RwAnimPlugin:
-                    var animPluginDataSection = new AnimPluginDataSection()
-                    {
-                        Type = sectionType,
-                        Size = sectionSize,
-                        Version = sectionVersion,
-                        //
-                        Unknown1 = NextUInt32(),
-                        BoneId = NextUInt32(),
-                        BoneCount = NextUInt32(),
-                        Unknown2 = NextUInt32(),
-                        Unknown3 = NextUInt32()
-                    };
-                    for (int i = 0; i < animPluginDataSection.BoneCount; i++)
-                    {
-                        animPluginDataSection.Bones.Add(new AnimPluginDataSection.BoneInformation()
+                    // 3.3 In case of special data formats, we parse their content
+                    //     accordingly
+                    case SectionType.RwFrame:
+                        var frameSection = new FrameDataSection()
                         {
-                            Id = NextUInt32(),
-                            Index = NextUInt32(),
-                            Type = NextUInt32()
-                        });
-                    }
-                    if (parserOffset != (startOffset + (int)animPluginDataSection.Size))
-                    {
-                        parserOffset = (startOffset + (int)animPluginDataSection.Size);
-                        animPluginDataSection.IsDamaged = true;
-                    }
-                    parent.AddChild(animPluginDataSection);
-                    return NextSection(parent);
+                            Type = sectionType,
+                            Size = sectionSize,
+                            Version = sectionVersion,
+                        };
+                        frameSection.FrameName = NextString((int)frameSection.Size);
+                        if (parserOffset != (startOffset + (int)frameSection.Size))
+                        {
+                            parserOffset = (startOffset + (int)frameSection.Size);
+                            frameSection.IsDamaged = true;
+                        }
+                        parent.AddChild(frameSection);
+                        continue;
 
-                // In all other cases we simply skip the number of bytes
-                // declared in the section header, without creating a Section
-                // object, nor adding it to the tree
-                default:
-                    NextString((int)sectionSize);
-                    return NextSection(parent);
+                    case SectionType.RwString:
+                        var stringDataSection = new StringDataSection()
+                        {
+                            Type = sectionType,
+                            Size = sectionSize,
+                            Version = sectionVersion,
+                        };
+                        stringDataSection.String = NextString((int)stringDataSection.Size);
+                        if (parserOffset != (startOffset + (int)stringDataSection.Size))
+                        {
+                            parserOffset = (startOffset + (int)stringDataSection.Size);
+                            stringDataSection.IsDamaged = true;
+                        }
+                        parent.AddChild(stringDataSection);
+                        continue;
+
+                    case SectionType.RwMaterialSplit:
+                        var materialSplitDataSection = new MaterialSplitDataSection()
+                        {
+                            Type = sectionType,
+                            Size = sectionSize,
+                            Version = sectionVersion,
+                            //
+                            FaceType = NextUInt32(),
+                            SplitCount = NextUInt32(),
+                            FaceCount = NextUInt32()
+                        };
+                        for (int i = 0; i < materialSplitDataSection.SplitCount; i++)
+                        {
+                            var split = new MaterialSplitDataSection.Split()
+                            {
+                                IndexCount = NextUInt32(),
+                                Material = NextUInt32(),
+                                Indices = new List<UInt32>()
+                            };
+                            materialSplitDataSection.Splits.Add(split);
+                            for (int j = 0; j < split.IndexCount; j++)
+                            {
+                                split.Indices.Add(NextUInt32());
+                            }
+                        }
+                        if (parserOffset != (startOffset + (int)materialSplitDataSection.Size))
+                        {
+                            parserOffset = (startOffset + (int)materialSplitDataSection.Size);
+                            materialSplitDataSection.IsDamaged = true;
+                        }
+                        parent.AddChild(materialSplitDataSection);
+                        continue;
+
+                    case SectionType.RwAnimPlugin:
+                        var animPluginDataSection = new AnimPluginDataSection()
+                        {
+                            Type = sectionType,
+                            Size = sectionSize,
+                            Version = sectionVersion,
+                            //
+                            Unknown1 = NextUInt32(),
+                            BoneId = NextUInt32(),
+                            BoneCount = NextUInt32(),
+                            Unknown2 = NextUInt32(),
+                            Unknown3 = NextUInt32()
+                        };
+                        for (int i = 0; i < animPluginDataSection.BoneCount; i++)
+                        {
+                            animPluginDataSection.Bones.Add(new AnimPluginDataSection.BoneInformation()
+                            {
+                                Id = NextUInt32(),
+                                Index = NextUInt32(),
+                                Type = NextUInt32()
+                            });
+                        }
+                        if (parserOffset != (startOffset + (int)animPluginDataSection.Size))
+                        {
+                            parserOffset = (startOffset + (int)animPluginDataSection.Size);
+                            animPluginDataSection.IsDamaged = true;
+                        }
+                        parent.AddChild(animPluginDataSection);
+                        continue;
+
+                    // In all other cases we simply skip the number of bytes
+                    // declared in the section header, without creating a Section
+                    // object, nor adding it to the tree
+                    default:
+                        NextString((int)sectionSize);
+                        continue;
+                }
             }
+            return root;
         }
     }
 }
