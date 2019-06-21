@@ -4,16 +4,19 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  */
 using System;
+using Sasinosoft.SampMapEditor.Pedestrians;
 
 namespace Sasinosoft.SampMapEditor.IDE
 {
     /// <summary>
-    /// Represent an "tobj" IDE section.
+    /// Represents a "peds" IDE element.
     /// </summary>
-    /// <see cref="https://gtamods.com/wiki/TOBJ"/>
-    public class TimeObjectsIDESection : ObjectsIDESection
+    /// <see cref="https://gtamods.com/wiki/PEDS"/>
+    public class PedsIDEElement : IDEElement
     {
-        public int TimeOn;
-        public int TimeOff;
+        public UInt32 Id;
+        public string ModelName;
+        public string TextureDictionaryName;
+        public PedestrianType Type;
     }
 }

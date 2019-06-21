@@ -74,13 +74,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="IDE\PedsIDEElement.cs" />
     <Compile Include="IDE\IDEFlags.cs" />
-    <Compile Include="IDE\IDESection.cs" />
-    <Compile Include="IDE\CarsIDESection.cs" />
-    <Compile Include="IDE\ObjectsIDESection.cs" />
-    <Compile Include="IDE\AnimObjectsIDESection.cs" />
-    <Compile Include="IDE\TimeObjectsIDESection.cs" />
+    <Compile Include="IDE\IDEParser.cs" />
+    <Compile Include="IDE\IDEElement.cs" />
+    <Compile Include="IDE\CarsIDEElement.cs" />
+    <Compile Include="IDE\ItemDefinitionDictionary.cs" />
+    <Compile Include="IDE\VehicleDefinition.cs" />
+    <Compile Include="IDE\WeaponDefinition.cs" />
+    <Compile Include="IDE\ObjectDefinition.cs" />
+    <Compile Include="IDE\WeaponsIDEElement.cs" />
+    <Compile Include="IDE\ObjectsIDEElement.cs" />
     <Compile Include="IPL\IPLElement.cs" />
+    <Compile Include="Pedestrians\PedestrianType.cs" />
     <Compile Include="Utils\Bindable.cs" />
     <Compile Include="Utils\BooleanToVisibilityInverseConverter.cs" />
     <Compile Include="Utils\DataNameAttribute.cs" />
