@@ -9,10 +9,10 @@ using Sasinosoft.SampMapEditor.Vehicles;
 namespace Sasinosoft.SampMapEditor.IDE
 {
     /// <summary>
-    /// Represent a "cars" IDE section.
+    /// Represents a "cars" IDE element.
     /// </summary>
     /// <see cref="https://gtamods.com/wiki/CARS_(IDE_Section)"/>
-    public class CarsIDESection : IDESection
+    public class CarsIDEElement : IDEElement
     {
         public UInt32 Id;
         public string ModelName;
