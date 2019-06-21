@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>map-3-multi-size.ico</ApplicationIcon>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HelixToolkit, Version=2.5.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
@@ -74,8 +74,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="IDE\IDEFlags.cs" />
+    <Compile Include="IDE\IDESection.cs" />
+    <Compile Include="IDE\CarsIDESection.cs" />
+    <Compile Include="IDE\ObjectsIDESection.cs" />
+    <Compile Include="IDE\AnimObjectsIDESection.cs" />
+    <Compile Include="IDE\TimeObjectsIDESection.cs" />
     <Compile Include="IPL\IPLElement.cs" />
+    <Compile Include="Utils\Bindable.cs" />
     <Compile Include="Utils\BooleanToVisibilityInverseConverter.cs" />
+    <Compile Include="Utils\DataNameAttribute.cs" />
+    <Compile Include="Vehicles\VehicleClass.cs" />
+    <Compile Include="View\Editor.xaml.cs">
+      <DependentUpon>Editor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="World\GameObject.cs" />
     <Compile Include="World\GameWorld.cs" />
     <Compile Include="RenderWare\Txd\TextureFormats.cs" />
@@ -83,8 +95,6 @@
     <Compile Include="IMG\IMGArchive.cs" />
     <Compile Include="IMG\IMGArchiveFile.cs" />
     <Compile Include="IMG\UnknownIMGVersionException.cs" />
-    <Compile Include="View\MainWindowCommands.cs" />
-    <Compile Include="View\MainWindowViewModel.cs" />
     <Compile Include="Utils\GTASAFilesContainer.cs" />
     <Compile Include="Utils\MouseUtils.cs" />
     <Compile Include="RenderWare\Dff\AnimPluginDataSection.cs" />
@@ -115,8 +125,12 @@
     <Compile Include="View\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\SettingsWindowViewModel.cs" />
     <Compile Include="Utils\ViewModel.cs" />
+    <Compile Include="Vehicles\VehicleType.cs" />
+    <Page Include="View\Editor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -168,10 +182,19 @@
     <None Include="RenderWare\readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="map-3-multi-size.ico" />
+    <Resource Include="license.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="license.txt" />
+    <Resource Include="icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="IDE\readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="IPL\readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="copyright.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

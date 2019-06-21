@@ -38,7 +38,7 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0" Text="{Binding Source={StaticResource Settings}, Path=Default.GTASAPath}"/>
+                            <TextBox Grid.Column="0" Text="{Binding GTASAPath}"/>
                             <Button Grid.Column="1" Content="Browse"
                                     Margin="4,0,0,0"
                                     Click="OnBrowseButtonClick"/>

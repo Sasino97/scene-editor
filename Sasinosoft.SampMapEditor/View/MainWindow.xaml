@@ -7,13 +7,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sasinosoft.SampMapEditor.View"
-        xmlns:conv="clr-namespace:Sasinosoft.SampMapEditor.Utils"
-        xmlns:helix="http://helix-toolkit.org/wpf"
         mc:Ignorable="d"
         Title="{Binding Title}" 
-        Width="800"
-        Height="600"
-        Loaded="OnLoaded">
+        Width="1024"
+        Height="768">
     
     <Window.DataContext>
         <local:MainWindowViewModel/>
@@ -35,13 +32,8 @@
         <KeyBinding Key="S" Modifiers="Ctrl" Command="{x:Static local:MainWindowCommands.SaveCommand}"/>
         <KeyBinding Key="S" Modifiers="Ctrl+Shift" Command="{x:Static local:MainWindowCommands.SaveAsCommand}"/>
         <KeyBinding Key="E" Modifiers="Ctrl" Command="{x:Static local:MainWindowCommands.ExportCommand}"/>
-        <KeyBinding Key="Esc" Command="{x:Static local:MainWindowCommands.ExitCommand}"/>
+        <KeyBinding Key="Esc" Modifiers="Ctrl" Command="{x:Static local:MainWindowCommands.ExitCommand}"/>
     </Window.InputBindings>
-
-    <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
-        <conv:BooleanToVisibilityInverseConverter x:Key="booleanToVisibilityInverseConverter"/>
-    </Window.Resources>
     
     <Grid>
         <Grid.RowDefinitions>
@@ -72,133 +64,15 @@
                 <ColumnDefinition Width="2"/>
                 <ColumnDefinition Width="250" MaxWidth="350"/>
             </Grid.ColumnDefinitions>
-
-            <Border Grid.Column="0" 
-                    BorderThickness="1"
-                    BorderBrush="White"
-                    Background="Black">
-                <Grid>
-                    <Canvas x:Name="canvas" 
-                            Background="Transparent"/>
-                    
-                    <helix:HelixViewport3D x:Name="vp3d"
-                                           CameraMode="WalkAround"
-                                           Visibility="{Binding IsReady, Converter={StaticResource booleanToVisibilityConverter}}"
-                                           
-                                           ShowCoordinateSystem="True"
-                                           InfiniteSpin="False"
-                                           ShowFrameRate="True"
-                                           ShowViewCube="False"
-                                           IsChangeFieldOfViewEnabled="False"
-                                           
-                                           RotateGesture="MiddleClick"
-                                           RotateGesture2="MiddleClick"
-                                           PanGesture="Ctrl+MiddleClick"
-                                           PanGesture2="Ctrl+MiddleClick"
-                                           ZoomGesture="Shift+MiddleClick"
-                                           ZoomGesture2="Shift+MiddleClick"
-                                           ChangeFieldOfViewGesture="Alt+MiddleClick"
-                                           ResetCameraKeyGesture=""
-                                           
-                                           PreviewMouseDown="OnViewportPreviewMouseDown"
-                                           PreviewMouseUp="OnViewportPreviewMouseUp">
-                        <!-- Unused gestures -->
-
-                        <helix:HelixViewport3D.ZoomRectangleGesture>
-                            <MouseGesture/>
-                        </helix:HelixViewport3D.ZoomRectangleGesture>
-
-                        <helix:HelixViewport3D.OrthographicToggleGesture>
-                            <MouseGesture/>
-                        </helix:HelixViewport3D.OrthographicToggleGesture>
-
-                        <helix:HelixViewport3D.ResetCameraGesture>
-                            <MouseGesture/>
-                        </helix:HelixViewport3D.ResetCameraGesture>
-                        
-                        <helix:HelixViewport3D.BackViewGesture>
-                            <MouseGesture/>
-                        </helix:HelixViewport3D.BackViewGesture>
-                        
-                        <helix:HelixViewport3D.FrontViewGesture>
-                            <MouseGesture/>
-                        </helix:HelixViewport3D.FrontViewGesture>
-                        
-                        <helix:HelixViewport3D.LeftViewGesture>
-                            <MouseGesture/>
-                        </helix:HelixViewport3D.LeftViewGesture>
-                        
-                        <helix:HelixViewport3D.RightViewGesture>
-                            <MouseGesture/>
-                        </helix:HelixViewport3D.RightViewGesture>
-                        
-                        <helix:HelixViewport3D.TopViewGesture>
-                            <MouseGesture/>
-                        </helix:HelixViewport3D.TopViewGesture>
-                        
-                        <helix:HelixViewport3D.BottomViewGesture>
-                            <MouseGesture/>
-                        </helix:HelixViewport3D.BottomViewGesture>
-                        
-                        <!-- Lights -->
-                        <helix:DefaultLights/>
-                        <helix:GridLinesVisual3D Thickness="0.1"/>
-                    </helix:HelixViewport3D>
-                    
-                    <!--<Viewport3D x:Name="vp3d" Visibility="{Binding IsReady, Converter={StaticResource booleanToVisibilityConverter}}">
-                        <Viewport3D.Camera>
-                            <PerspectiveCamera Position="{Binding CameraPosition}" 
-                                               LookDirection="{Binding CameraLookDirection}"
-                                               Transform="{Binding CameraTransform}"
-                                               UpDirection="0,1,0"
-                                               FieldOfView="60"/>
-
-                        </Viewport3D.Camera>
-
-                        --><!--Test 3D data-->
-                        <!--<ModelVisual3D>
-                            <ModelVisual3D.Content>
-                                <Model3DGroup>
-                                    <Model3DGroup.Children>
-                                        <DirectionalLight Color="#FFFFFFFF" Direction="3,-4,5" />
-
-                                        <GeometryModel3D>
-                                            <GeometryModel3D.Geometry>
-                                                <MeshGeometry3D Positions="0.293893 -0.5 0.404509  0.475528 -0.5 0.154509  0 0.5 0  0.475528 -0.5 0.154509  0 0.5 0  0 0.5 0  0.475528 -0.5 0.154509  0.475528 -0.5 -0.154509  0 0.5 0  0.475528 -0.5 -0.154509  0 0.5 0  0 0.5 0  0.475528 -0.5 -0.154509  0.293893 -0.5 -0.404509  0 0.5 0  0.293893 -0.5 -0.404509  0 0.5 0  0 0.5 0  0.293893 -0.5 -0.404509  0 -0.5 -0.5  0 0.5 0  0 -0.5 -0.5  0 0.5 0  0 0.5 0  0 -0.5 -0.5  -0.293893 -0.5 -0.404509  0 0.5 0  -0.293893 -0.5 -0.404509  0 0.5 0  0 0.5 0  -0.293893 -0.5 -0.404509  -0.475528 -0.5 -0.154509  0 0.5 0  -0.475528 -0.5 -0.154509  0 0.5 0  0 0.5 0  -0.475528 -0.5 -0.154509  -0.475528 -0.5 0.154509  0 0.5 0  -0.475528 -0.5 0.154509  0 0.5 0  0 0.5 0  -0.475528 -0.5 0.154509  -0.293892 -0.5 0.404509  0 0.5 0  -0.293892 -0.5 0.404509  0 0.5 0  0 0.5 0  -0.293892 -0.5 0.404509  0 -0.5 0.5  0 0.5 0  0 -0.5 0.5  0 0.5 0  0 0.5 0  0 -0.5 0.5  0.293893 -0.5 0.404509  0 0.5 0  0.293893 -0.5 0.404509  0 0.5 0  0 0.5 0  " 
-                                                            Normals="0.7236065,0.4472139,0.5257313  0.2763934,0.4472138,0.8506507  0.5308242,0.4294462,0.7306172  0.2763934,0.4472138,0.8506507  0,0.4294458,0.9030925  0.5308242,0.4294462,0.7306172  0.2763934,0.4472138,0.8506507  -0.2763934,0.4472138,0.8506507  0,0.4294458,0.9030925  -0.2763934,0.4472138,0.8506507  -0.5308242,0.4294462,0.7306172  0,0.4294458,0.9030925  -0.2763934,0.4472138,0.8506507  -0.7236065,0.4472139,0.5257313  -0.5308242,0.4294462,0.7306172  -0.7236065,0.4472139,0.5257313  -0.858892,0.429446,0.279071  -0.5308242,0.4294462,0.7306172  -0.7236065,0.4472139,0.5257313  -0.8944269,0.4472139,0  -0.858892,0.429446,0.279071  -0.8944269,0.4472139,0  -0.858892,0.429446,-0.279071  -0.858892,0.429446,0.279071  -0.8944269,0.4472139,0  -0.7236065,0.4472139,-0.5257313  -0.858892,0.429446,-0.279071  -0.7236065,0.4472139,-0.5257313  -0.5308242,0.4294462,-0.7306172  -0.858892,0.429446,-0.279071  -0.7236065,0.4472139,-0.5257313  -0.2763934,0.4472138,-0.8506507  -0.5308242,0.4294462,-0.7306172  -0.2763934,0.4472138,-0.8506507  0,0.4294458,-0.9030925  -0.5308242,0.4294462,-0.7306172  -0.2763934,0.4472138,-0.8506507  0.2763934,0.4472138,-0.8506507  0,0.4294458,-0.9030925  0.2763934,0.4472138,-0.8506507  0.5308249,0.4294459,-0.7306169  0,0.4294458,-0.9030925  0.2763934,0.4472138,-0.8506507  0.7236068,0.4472141,-0.5257306  0.5308249,0.4294459,-0.7306169  0.7236068,0.4472141,-0.5257306  0.8588922,0.4294461,-0.27907  0.5308249,0.4294459,-0.7306169  0.7236068,0.4472141,-0.5257306  0.8944269,0.4472139,0  0.8588922,0.4294461,-0.27907  0.8944269,0.4472139,0  0.858892,0.429446,0.279071  0.8588922,0.4294461,-0.27907  0.8944269,0.4472139,0  0.7236065,0.4472139,0.5257313  0.858892,0.429446,0.279071  0.7236065,0.4472139,0.5257313  0.5308242,0.4294462,0.7306172  0.858892,0.429446,0.279071  "                   
-                                                            TriangleIndices="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 " />
-                                            </GeometryModel3D.Geometry>
-                                            <GeometryModel3D.Material>
-                                                <DiffuseMaterial>
-                                                    <DiffuseMaterial.Brush>
-                                                        <SolidColorBrush Color="Red" 
-                                                                     Opacity="1.0"/>
-                                                    </DiffuseMaterial.Brush>
-                                                </DiffuseMaterial>
-                                            </GeometryModel3D.Material>
-                                        </GeometryModel3D>
-                                    </Model3DGroup.Children>
-                                </Model3DGroup>
-                            </ModelVisual3D.Content>
-                        </ModelVisual3D>--><!--
-                    </Viewport3D>-->
-                    
-                    <!--This canvas is a dummy control used only to detect mouse events on the
-                    whole surface, since Viewport3D only detects mouse events that are done
-                    when the cursor is on a 3D object and not in the empty space.-->
-                    
-
-                    <Label Visibility="{Binding IsReady, Converter={StaticResource booleanToVisibilityInverseConverter}}"
-                           Content="Loading GTA San Andreas model files ..."
-                           Foreground="White"
-                           FontSize="14"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
-                </Grid>
-            </Border>
-
+            
+            <local:Editor Grid.Column="0"/>
+            
             <GridSplitter Grid.Column="1"
                           HorizontalAlignment="Stretch"/>
+
+            <Grid Grid.Column="2">
+                <!--  TODO -->
+            </Grid>
         </Grid>
     </Grid>
 </Window>

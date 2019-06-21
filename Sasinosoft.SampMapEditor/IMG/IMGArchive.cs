@@ -50,7 +50,7 @@ namespace Sasinosoft.SampMapEditor.IMG
             stream.Dispose();
         }
 
-        public Nullable<IMGArchiveFile> GetFileById(int id, bool buffer=true)
+        public IMGArchiveFile? GetFileById(int id, bool buffer=true)
         {
             if(id >= DirEntries.Count)
                 return null;
@@ -71,7 +71,7 @@ namespace Sasinosoft.SampMapEditor.IMG
             return archiveFile;
         }
 
-        public Nullable<IMGArchiveFile> GetFileByName(string name, bool buffer=true)
+        public IMGArchiveFile? GetFileByName(string name, bool buffer=true)
         {
             DirEntry? entry = DirEntries
                 .Where(e => e.FileName == name)
