@@ -6,18 +6,23 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Forms;
+using Sasinosoft.SampMapEditor.Utils;
 
 namespace Sasinosoft.SampMapEditor.View
 {
     public partial class SettingsWindow : Window
     {
+        public SettingsWindowViewModel ViewModel { get; private set; }
+
         public SettingsWindow()
         {
             InitializeComponent();
+            ViewModel = DataContext as SettingsWindowViewModel;
         }
 
         private void OnClosing(object sender, CancelEventArgs e)
         {
+            Properties.Settings.Default.GTASAPath = ViewModel.GTASAPath;
             Properties.Settings.Default.Save();
         }
 
@@ -28,13 +33,23 @@ namespace Sasinosoft.SampMapEditor.View
             dialog.Description = "Select any valid GTA San Andreas installation directory";
             if(dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                Properties.Settings.Default.GTASAPath = dialog.SelectedPath;
+                ViewModel.GTASAPath = dialog.SelectedPath;
             }
         }
 
         private void OnSaveButtonClick(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+    }
+
+    public class SettingsWindowViewModel : ViewModel
+    {
+        private string gtaSAPath;
+        public string GTASAPath
+        {
+            get { return gtaSAPath; }
+            set { SetProperty(ref gtaSAPath, value); }
         }
     }
 }
