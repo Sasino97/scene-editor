@@ -81,16 +81,19 @@
     <Compile Include="IDE\CarsIDEElement.cs" />
     <Compile Include="IDE\ItemDefinitionDictionary.cs" />
     <Compile Include="IDE\VehicleDefinition.cs" />
+    <Compile Include="IDE\SkinDefinition.cs" />
     <Compile Include="IDE\WeaponDefinition.cs" />
     <Compile Include="IDE\ObjectDefinition.cs" />
     <Compile Include="IDE\WeaponsIDEElement.cs" />
     <Compile Include="IDE\ObjectsIDEElement.cs" />
     <Compile Include="IPL\IPLElement.cs" />
     <Compile Include="Pedestrians\PedestrianType.cs" />
+    <Compile Include="Pedestrians\PedestrianUtils.cs" />
     <Compile Include="Utils\Bindable.cs" />
     <Compile Include="Utils\BooleanToVisibilityInverseConverter.cs" />
     <Compile Include="Utils\DataNameAttribute.cs" />
     <Compile Include="Vehicles\VehicleClass.cs" />
+    <Compile Include="Vehicles\VehicleUtils.cs" />
     <Compile Include="View\Editor.xaml.cs">
       <DependentUpon>Editor.xaml</DependentUpon>
     </Compile>

@@ -6,7 +6,9 @@
 using System;
 using System.IO;
 using System.Text;
-using Sasinosoft.SampMapEditor.Vehicles;
+
+using static Sasinosoft.SampMapEditor.Vehicles.VehicleUtils;
+using static Sasinosoft.SampMapEditor.Pedestrians.PedestrianUtils;
 
 namespace Sasinosoft.SampMapEditor.IDE
 {
@@ -67,11 +69,6 @@ namespace Sasinosoft.SampMapEditor.IDE
             string mode = null;
             errorCount = 0;
 
-            //var memInfo = typeof(VehicleType).GetMember(FunkyAttributesEnum.NameWithoutSpaces1.ToString());
-            //var mem = memInfo.FirstOrDefault(m => m.DeclaringType == type);
-            //var attributes = mem.GetCustomAttributes(typeof(DescriptionAttribute), false);
-            //var description = ((DescriptionAttribute)attributes[0]).Description;
-
             foreach (string line in lines)
             {
                 if (line.StartsWith("#", StringComparison.InvariantCultureIgnoreCase))
@@ -84,7 +81,8 @@ namespace Sasinosoft.SampMapEditor.IDE
                         line.StartsWith("anim", StringComparison.InvariantCultureIgnoreCase) || 
                         line.StartsWith("tanm", StringComparison.InvariantCultureIgnoreCase) || 
                         line.StartsWith("cars", StringComparison.InvariantCultureIgnoreCase) ||
-                        line.StartsWith("weap", StringComparison.InvariantCultureIgnoreCase))
+                        line.StartsWith("weap", StringComparison.InvariantCultureIgnoreCase) ||
+                        line.StartsWith("peds", StringComparison.InvariantCultureIgnoreCase))
                     {
                         mode = line.Substring(0, 4).ToLowerInvariant();
                     }
@@ -245,11 +243,11 @@ namespace Sasinosoft.SampMapEditor.IDE
                             element.Id = UInt32.Parse(parts[0]);
                             element.ModelName = parts[1];
                             element.TextureDictionaryName = parts[2];
-                            element.Type = (VehicleType)UInt32.Parse(parts[3]);
+                            element.Type = VehicleTypeFromString(parts[3]);
                             element.Handling = parts[4];
                             element.GXTKey = parts[5];
                             element.Anims = parts[6];
-                            element.Class = (VehicleClass)UInt32.Parse(parts[7]);
+                            element.Class = VehicleClassFromString(parts[7]);
                             element.Frequency = UInt32.Parse(parts[8]);
                             element.Unknown = UInt32.Parse(parts[9]);
                             element.Comprules = UInt32.Parse(parts[10]);
@@ -289,6 +287,36 @@ namespace Sasinosoft.SampMapEditor.IDE
                             AnimationName = element.AnimationName
                         };
                         dictionary.Weapons.Add((int)element.Id, wep);
+                    }
+                    else if (mode == "peds")
+                    {
+                        var element = new PedsIDEElement();
+                        if (parts.Length >= 14)
+                        {
+                            element.Id = UInt32.Parse(parts[0]);
+                            element.ModelName = parts[1];
+                            element.TextureDictionaryName = parts[2];
+                            element.Type = PedestrianTypeFromString(parts[3]);
+                            element.Behavior = parts[4];
+                            element.AnimationGroup = parts[5];
+                            element.CarsCanDrive = UInt32.Parse(parts[6]);
+                            element.Flags = UInt32.Parse(parts[7]);
+                            element.AnimationFile = parts[8];
+                            element.Radio1 = UInt32.Parse(parts[9]);
+                            element.Radio2 = UInt32.Parse(parts[10]);
+                            element.VoiceArchive = parts[11];
+                            element.Voice1 = parts[12];
+                            element.Voice2 = parts[13];
+                        }
+
+                        var skin = new SkinDefinition()
+                        {
+                            ModelName = element.ModelName,
+                            TextureDictionaryName = element.TextureDictionaryName,
+                            AnimationGroupName = element.AnimationGroup,
+                            Type = element.Type
+                        };
+                        dictionary.Skins.Add((int)element.Id, skin);
                     }
                 }
             }

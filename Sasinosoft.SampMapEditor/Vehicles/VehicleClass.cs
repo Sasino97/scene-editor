@@ -12,6 +12,9 @@ namespace Sasinosoft.SampMapEditor.Vehicles
     /// </summary>
     public enum VehicleClass
     {
+        [DataName(null)]
+        Undefined,
+
         [DataName("normal")]
         Normal,
 
@@ -49,6 +52,6 @@ namespace Sasinosoft.SampMapEditor.Vehicles
         Bicycle,
 
         [DataName("ignore")]
-        Undefined
+        Ignore
     }
 }
