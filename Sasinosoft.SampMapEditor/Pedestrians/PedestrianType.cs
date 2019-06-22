@@ -12,6 +12,9 @@ namespace Sasinosoft.SampMapEditor.Pedestrians
     /// </summary>
     public enum PedestrianType
     {
+        [DataName(null)]
+        Undefined,
+
         [DataName("PLAYER1")]
         Player1,
 

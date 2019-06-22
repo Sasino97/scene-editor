@@ -18,5 +18,15 @@ namespace Sasinosoft.SampMapEditor.IDE
         public string ModelName;
         public string TextureDictionaryName;
         public PedestrianType Type;
+        public string Behavior;
+        public string AnimationGroup;
+        public UInt32 CarsCanDrive;
+        public UInt32 Flags;
+        public string AnimationFile;
+        public UInt32 Radio1;
+        public UInt32 Radio2;
+        public string VoiceArchive;
+        public string Voice1;
+        public string Voice2;
     }
 }
