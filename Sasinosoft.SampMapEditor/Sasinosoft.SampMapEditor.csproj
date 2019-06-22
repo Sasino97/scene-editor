@@ -79,13 +79,14 @@
     <Compile Include="IDE\IDEParser.cs" />
     <Compile Include="IDE\IDEElement.cs" />
     <Compile Include="IDE\CarsIDEElement.cs" />
-    <Compile Include="IDE\ItemDefinitionDictionary.cs" />
     <Compile Include="IDE\VehicleDefinition.cs" />
     <Compile Include="IDE\SkinDefinition.cs" />
     <Compile Include="IDE\WeaponDefinition.cs" />
     <Compile Include="IDE\ObjectDefinition.cs" />
     <Compile Include="IDE\WeaponsIDEElement.cs" />
     <Compile Include="IDE\ObjectsIDEElement.cs" />
+    <Compile Include="IPL\CarsIPLElement.cs" />
+    <Compile Include="IPL\InstanceIPLElement.cs" />
     <Compile Include="IPL\IPLElement.cs" />
     <Compile Include="Pedestrians\PedestrianType.cs" />
     <Compile Include="Pedestrians\PedestrianUtils.cs" />
@@ -104,7 +105,7 @@
     <Compile Include="IMG\IMGArchive.cs" />
     <Compile Include="IMG\IMGArchiveFile.cs" />
     <Compile Include="IMG\UnknownIMGVersionException.cs" />
-    <Compile Include="Utils\GTASAFilesContainer.cs" />
+    <Compile Include="Data\MasterDictionary.cs" />
     <Compile Include="Utils\MouseUtils.cs" />
     <Compile Include="RenderWare\Dff\AnimPluginDataSection.cs" />
     <Compile Include="RenderWare\Dff\AtomicDataSection.cs" />

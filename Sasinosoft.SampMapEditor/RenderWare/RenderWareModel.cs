@@ -129,6 +129,9 @@ namespace Sasinosoft.SampMapEditor.RenderWare
         
         public void SetTextureData(RenderWareTextureDictionary txd)
         {
+            if (txd == null)
+                return;
+
             foreach(string name in MaterialGroupDictionary.Keys)
             {
                 List<MaterialInfo> materialInfoList = MaterialGroupDictionary[name];
