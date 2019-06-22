@@ -20,7 +20,7 @@ namespace Sasinosoft.SampMapEditor.IDE
         public PedestrianType Type;
         public string Behavior;
         public string AnimationGroup;
-        public UInt32 CarsCanDrive;
+        public string CarsCanDrive;
         public UInt32 Flags;
         public string AnimationFile;
         public UInt32 Radio1;

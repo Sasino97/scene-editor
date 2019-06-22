@@ -22,12 +22,12 @@ namespace Sasinosoft.SampMapEditor.IDE
         public string GXTKey;
         public string Anims;
         public VehicleClass Class;
-        public UInt32 Frequency;
-        public UInt32 Unknown;
-        public UInt32 Comprules;
-        public UInt32 WheelId;
+        public string Frequency;
+        public string Unknown;
+        public string Comprules;
+        public Int32 WheelId;
         public float WheelScaleFront;
         public float WheelScaleRear;
-        public UInt32 WheelUpgradeClass;
+        public Int32 WheelUpgradeClass;
     }
 }

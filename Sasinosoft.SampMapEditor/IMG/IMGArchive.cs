@@ -15,7 +15,7 @@ namespace Sasinosoft.SampMapEditor.IMG
         private Stream stream;
         public List<DirEntry> DirEntries { get; private set; } = new List<DirEntry>();
 
-        public IMGArchive(Stream stream)
+        public IMGArchive(Stream stream, string archiveName = "")
         {
             this.stream = stream;
             var binReader = new BinaryReader(stream);
@@ -28,6 +28,7 @@ namespace Sasinosoft.SampMapEditor.IMG
                 {
                     DirEntry dirEntry = new DirEntry
                     {
+                        ArchiveName = archiveName,
                         Offset = binReader.ReadUInt32(),
                         Size = binReader.ReadUInt16(),
                         Size2 = binReader.ReadUInt16(),
@@ -43,7 +44,7 @@ namespace Sasinosoft.SampMapEditor.IMG
 
         // can throw an exception if the file path is not valid
         public IMGArchive(string filePath) 
-            : this(new FileStream(filePath, FileMode.Open, FileAccess.Read)) { }
+            : this(new FileStream(filePath, FileMode.Open, FileAccess.Read), filePath) { }
 
         public void Dispose()
         {
@@ -74,7 +75,7 @@ namespace Sasinosoft.SampMapEditor.IMG
         public IMGArchiveFile? GetFileByName(string name, bool buffer=true)
         {
             DirEntry? entry = DirEntries
-                .Where(e => e.FileName == name)
+                .Where(e => e.FileName.ToLowerInvariant() == name.ToLowerInvariant())
                 .Cast<DirEntry?>()
                 .FirstOrDefault();
 
