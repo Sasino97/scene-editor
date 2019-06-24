@@ -28,8 +28,8 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Dff
         /// <param name="stream">The stream to read.</param>
         /// <param name="offset">The offset from which it must start reading the stream.</param>
         /// <param name="length">The length in bytes of the section of the stream to read.</param>
-        /// <returns>A new RenderWareModel object containing the DFF data read from the stream.</returns>
-        public RenderWareModel Parse(Stream stream, int offset, int length)
+        /// <returns>A new ExtendedSection object containing the DFF data read from the stream.</returns>
+        public ExtendedSection Parse(Stream stream, int offset, int length)
         {
             byte[] data = new byte[length];
             stream.Read(data, offset, length);
@@ -40,8 +40,8 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Dff
         /// Parses a RenderWare DFF model from a stream.
         /// </summary>
         /// <param name="stream">The stream to read.</param>
-        /// <returns>A new RenderWareModel object containing the DFF data read from the stream.</returns>
-        public RenderWareModel Parse(Stream stream)
+        /// <returns>A new ExtendedSection object containing the DFF data read from the stream.</returns>
+        public ExtendedSection Parse(Stream stream)
         {
             int offset = 0;
             long size = stream.Length;
@@ -52,8 +52,8 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Dff
         /// Parses a RenderWare DFF model from a file.
         /// </summary>
         /// <param name="fileName">The name of the file to read.</param>
-        /// <returns>A new RenderWareModel object containing the DFF data read from the file stream.</returns>
-        public RenderWareModel Parse(string fileName)
+        /// <returns>A new ExtendedSection object containing the DFF data read from the file stream.</returns>
+        public ExtendedSection Parse(string fileName)
         {
             return Parse(new FileStream(fileName, FileMode.Open, FileAccess.Read));
         }
@@ -63,7 +63,7 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Dff
         /// </summary>
         /// <param name="imgArchive">The object representing the IMG archive containing the DFF file.</param>
         /// <param name="index">The index of the file inside the archive.</param>
-        /// <returns>A new RenderWareModel object containing the DFF data read from the archive.</returns>
+        /// <returns>A new ExtendedSection object containing the DFF data read from the archive.</returns>
         /// <remarks>
         /// The IMGArchive must not be already disposed when calling this function.
         /// </remarks>
@@ -71,10 +71,10 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Dff
         /// var fileIdx = 2415;
         /// using (var imgArchive = new IMGArchive("gta3.img"))
         /// {
-        ///     RenderWareModel model = DffParser.Parse(imgArchive, fileIdx);
+        ///     RenderWareModel model = new RenderWareModel(DffParser.Parse(imgArchive, fileIdx));
         /// }
         /// </example>
-        public RenderWareModel Parse(IMGArchive imgArchive, int index)
+        public ExtendedSection Parse(IMGArchive imgArchive, int index)
         {
             IMGArchiveFile? archiveFile = imgArchive.GetFileById(index);
             if (archiveFile.HasValue)
@@ -90,7 +90,7 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Dff
         /// </summary>
         /// <param name="imgArchive">The object representing the IMG archive containing the DFF file.</param>
         /// <param name="fileName">The name of the file inside the archive.</param>
-        /// <returns>A new RenderWareModel object containing the DFF data read from the archive.</returns>
+        /// <returns>A new ExtendedSection object containing the DFF data read from the archive.</returns>
         /// <remarks>
         /// The IMGArchive must not be already disposed when calling this function.
         /// </remarks>
@@ -98,10 +98,10 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Dff
         /// var fileName = "shamal.dff";
         /// using (var imgArchive = new IMGArchive("gta3.img"))
         /// {
-        ///     RenderWareModel model = DffParser.Parse(imgArchive, fileName);
+        ///     RenderWareModel model = new RenderWareModel(DffParser.Parse(imgArchive, fileIdx));
         /// }
         /// </example>
-        public RenderWareModel Parse(IMGArchive imgArchive, string fileName)
+        public ExtendedSection Parse(IMGArchive imgArchive, string fileName)
         {
             IMGArchiveFile? archiveFile = imgArchive.GetFileByName(fileName);
             if (archiveFile.HasValue)
@@ -116,7 +116,7 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Dff
         /// Parses all RenderWare DFF models from an IMG archive.
         /// </summary>
         /// <param name="imgArchive">The object representing the IMG archive containing the DFF files.</param>
-        /// <returns>A List of all the RenderWareModels read from the IMG archive.</returns>
+        /// <returns>A List of ExtendedSection containing all the DFF data read from the IMG archive.</returns>
         /// <remarks>
         /// The IMGArchive must not be already disposed when calling this function. Only the files having
         /// an extension of '.dff' will be considered DFF models, and thus parsed and added to the returned List.
@@ -124,12 +124,12 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Dff
         /// <example>
         /// using (var imgArchive = new IMGArchive("gta3.img"))
         /// {
-        ///     List&lt;RenderWareModel&gt; models = DffParser.ParseAll(imgArchive);
+        ///     List&lt;ExtendedSection&gt; data = DffParser.ParseAll(imgArchive);
         /// }
         /// </example>
-        public List<RenderWareModel> ParseAll(IMGArchive imgArchive)
+        public List<ExtendedSection> ParseAll(IMGArchive imgArchive)
         {
-            var list = new List<RenderWareModel>();
+            var list = new List<ExtendedSection>();
             for (int i = 0; i < imgArchive.DirEntries.Count; i++)
             {
                 IMGArchiveFile? archiveFile = imgArchive.GetFileById(i, false);
@@ -150,13 +150,13 @@ namespace Sasinosoft.SampMapEditor.RenderWare.Dff
         /// Parses a RenderWare DFF model from a byte array.
         /// </summary>
         /// <param name="data">The DFF data to read in binary form.</param>
-        /// <returns>A new RenderWareModel object containing the parsed DFF data.</returns>
-        public RenderWareModel Parse(byte[] data)
+        /// <returns>A new ExtendedSection object containing the parsed DFF data.</returns>
+        public ExtendedSection Parse(byte[] data)
         {
             parserData = data;
             parserOffset = 0;
             ExtendedSection root = CreateTree();
-            return new RenderWareModel(root);
+            return root;
         }
 
         private byte[] SubByteArray(int length)

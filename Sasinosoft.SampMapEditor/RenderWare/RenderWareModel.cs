@@ -4,6 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  */
 using Sasinosoft.SampMapEditor.RenderWare.Dff;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
@@ -97,7 +98,7 @@ namespace Sasinosoft.SampMapEditor.RenderWare
 
                     var matGroup = new MaterialGroup();
                     model3d.Material = matGroup;
-                    matGroup.Children.Add(new DiffuseMaterial(Brushes.White));
+                    matGroup.Children.Add(new SpecularMaterial(Brushes.White, 5));
 
                     foreach (Section materialList in ((ExtendedSection)geometry).GetChildren(SectionType.RwMaterialList))
                     {

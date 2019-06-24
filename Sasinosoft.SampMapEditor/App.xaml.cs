@@ -11,6 +11,7 @@ namespace Sasinosoft.SampMapEditor
 {
     public partial class App : Application
     {
+        public static string APP_TITLE = "Sasinosoft Scene Editor For SA-MP";
         public App()
         {
             // Very important. Miss these lines, and the decimal parsing might behave differently

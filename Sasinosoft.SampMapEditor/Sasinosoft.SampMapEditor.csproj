@@ -209,5 +209,8 @@
   <ItemGroup>
     <Resource Include="copyright.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Utils\MathUtils.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
