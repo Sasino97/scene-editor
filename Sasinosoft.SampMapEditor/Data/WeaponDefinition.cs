@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  */
 
-namespace Sasinosoft.SampMapEditor.IDE
+namespace Sasinosoft.SampMapEditor.Data
 {
-    public class ObjectDefinition
+    public class WeaponDefinition
     {
         public string ModelName { get; set; }
         public string TextureDictionaryName { get; set; }

@@ -10,17 +10,19 @@ namespace Sasinosoft.SampMapEditor.IPL
     /// Represents a "cars" IPL element.
     /// </summary>
     /// <see cref="https://gtamods.com/wiki/CARS_(IPL_Section)"/>
-    public class CarsIPLElement
+    public class CarsIPLElement : IPLElement
     {
         public float X;
         public float Y;
         public float Z;
-        public float R;
-        public int ModelID;
+        public float Angle;
+        public int Id;
         public int Color1;
         public int Color2;
         public int ForceSpawn;
         public int Alarm;
         public int DoorLock;
+        public int Unknown1;
+        public int Unknown2;
     }
 }

@@ -74,18 +74,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data\VehiclePlacementDefinition.cs" />
+    <Compile Include="Data\ObjectPlacementDefinition.cs" />
     <Compile Include="IDE\PedsIDEElement.cs" />
     <Compile Include="IDE\IDEFlags.cs" />
     <Compile Include="IDE\IDEParser.cs" />
     <Compile Include="IDE\IDEElement.cs" />
     <Compile Include="IDE\CarsIDEElement.cs" />
-    <Compile Include="IDE\VehicleDefinition.cs" />
-    <Compile Include="IDE\SkinDefinition.cs" />
-    <Compile Include="IDE\WeaponDefinition.cs" />
-    <Compile Include="IDE\ObjectDefinition.cs" />
+    <Compile Include="Data\VehicleDefinition.cs" />
+    <Compile Include="Data\SkinDefinition.cs" />
+    <Compile Include="Data\WeaponDefinition.cs" />
+    <Compile Include="Data\ObjectDefinition.cs" />
     <Compile Include="IDE\WeaponsIDEElement.cs" />
     <Compile Include="IDE\ObjectsIDEElement.cs" />
     <Compile Include="IPL\CarsIPLElement.cs" />
+    <Compile Include="IPL\IPLParser.cs" />
     <Compile Include="IPL\InstanceIPLElement.cs" />
     <Compile Include="IPL\IPLElement.cs" />
     <Compile Include="Pedestrians\PedestrianType.cs" />

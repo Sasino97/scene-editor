@@ -10,9 +10,9 @@ namespace Sasinosoft.SampMapEditor.IPL
     /// Represents an "inst" IPL element.
     /// </summary>
     /// <see cref="https://gtamods.com/wiki/INST"/>
-    public class InstanceIPLElement
+    public class InstanceIPLElement : IPLElement
     {
-        public int ModelID;
+        public int Id;
         public string ModelName; // irrelevant
         public int Interior;
         public float X;
@@ -22,6 +22,6 @@ namespace Sasinosoft.SampMapEditor.IPL
         public float RY;
         public float RZ;
         public float RW;
-        public int LOD;
+        public int LODIndex;
     }
 }

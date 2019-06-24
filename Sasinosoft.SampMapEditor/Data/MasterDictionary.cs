@@ -5,13 +5,14 @@
  */
 using Sasinosoft.SampMapEditor.IDE;
 using Sasinosoft.SampMapEditor.IMG;
+using Sasinosoft.SampMapEditor.IPL;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
-namespace Sasinosoft.SampMapEditor.Utils
+namespace Sasinosoft.SampMapEditor.Data
 {
     public static class MasterDictionary
     {
@@ -23,6 +24,10 @@ namespace Sasinosoft.SampMapEditor.Utils
         public static Dictionary<int, VehicleDefinition> VehicleDefinitions = new Dictionary<int, VehicleDefinition>();
         public static Dictionary<int, SkinDefinition> SkinDefinitions = new Dictionary<int, SkinDefinition>();
         public static Dictionary<int, WeaponDefinition> WeaponDefinitions = new Dictionary<int, WeaponDefinition>();
+
+        // IPL containers
+        public static Dictionary<int, ObjectPlacementDefinition> ObjectPlacementDefinitions = new Dictionary<int, ObjectPlacementDefinition>();
+        public static Dictionary<int, VehiclePlacementDefinition> VehiclePlacementDefinitions = new Dictionary<int, VehiclePlacementDefinition>();
 
         // Events
         public static event EventHandler IMGLoadCompleted;
@@ -38,15 +43,20 @@ namespace Sasinosoft.SampMapEditor.Utils
         };
         private static readonly bool imgOverwriteDuplicates = true;
 
-
-        // if a .DAT file is specified, it will read the files indicated by the "IPL" entries in that file
+        // if a .DAT file is specified, it will read the files indicated by the "IDE" entries in that file
         private static readonly string[] ideFileNames =
         {
             @"data\default.dat",
             @"data\gta.dat",
             @"SAMP\SAMP.ide"
         };
-        private static readonly bool ideOverwriteDuplicates = true;
+        // if a .DAT file is specified, it will read the files indicated by the "IPL" entries in that file
+        private static readonly string[] iplFileNames =
+        {
+            @"data\default.dat",
+            @"data\gta.dat",
+            @"SAMP\SAMP.ipl"
+        };
 
         // Other
         private static Thread imgLoaderThread;
@@ -152,16 +162,50 @@ namespace Sasinosoft.SampMapEditor.Utils
         }
 
         /// <summary>
-        /// 
+        /// Scans all the IPL files specified in the configuration, and adds
+        /// the entries to different Dictionaries according to their type.
         /// </summary>
         public static void LoadIPL()
         {
-
+            iplLoaderThread.Start();
         }
 
         private static void DoLoadIPL()
         {
+            var t = DateTime.Now;
+            var iplParser = new IPLParser();
+            var errorCount = 0;
 
+            foreach (string iplFileName in iplFileNames)
+            {
+                string fname = Path.Combine(Properties.Settings.Default.GTASAPath, iplFileName);
+
+                if (Path.GetExtension(fname).ToLowerInvariant() == ".dat")
+                {
+                    var content = File.ReadAllText(fname);
+                    string[] lines = content.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string line in lines)
+                    {
+                        if (line.StartsWith("IPL", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            string iplFileToRead = Path.Combine(Properties.Settings.Default.GTASAPath, line.Split(' ')[1]);
+                            iplParser.Parse(iplFileToRead, out int err);
+                            errorCount += err;
+                        }
+                    }
+                }
+                else if (Path.GetExtension(fname).ToLowerInvariant() == ".ipl")
+                {
+                    iplParser.Parse(fname, out int err);
+                    errorCount += err;
+                }
+            }
+            Debug.WriteLine($"Total time elapsed: {DateTime.Now - t}");
+
+            if (errorCount > 0)
+                Debug.WriteLine($"{errorCount} errors.");
+
+            IPLLoadCompleted?.Invoke(typeof(MasterDictionary), new EventArgs());
         }
     }
 }

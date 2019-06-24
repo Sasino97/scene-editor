@@ -4,11 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  */
 
-using Sasinosoft.SampMapEditor.IDE;
-using Sasinosoft.SampMapEditor.IMG;
+using Sasinosoft.SampMapEditor.Data;
 using Sasinosoft.SampMapEditor.RenderWare;
-using Sasinosoft.SampMapEditor.RenderWare.Dff;
-using Sasinosoft.SampMapEditor.RenderWare.Txd;
 using Sasinosoft.SampMapEditor.Utils;
 using System;
 using System.IO;
@@ -32,6 +29,7 @@ namespace Sasinosoft.SampMapEditor.View
             //
             MasterDictionary.IMGLoadCompleted += OnMasterDictionaryIMGLoadCompleted;
             MasterDictionary.IDELoadCompleted += OnMasterDictionaryIDELoadCompleted;
+            MasterDictionary.IPLLoadCompleted += OnMasterDictionaryIPLLoadCompleted;
         }
 
         private void OnViewportPreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -124,6 +122,10 @@ namespace Sasinosoft.SampMapEditor.View
         }
 
         private void OnMasterDictionaryIDELoadCompleted(object sender, EventArgs e)
+        {
+            MasterDictionary.LoadIPL();
+        }
+        private void OnMasterDictionaryIPLLoadCompleted(object sender, EventArgs e)
         {
             ViewModel.IsReady = true;
         }

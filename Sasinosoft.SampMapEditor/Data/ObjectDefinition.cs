@@ -4,15 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  */
 
-using Sasinosoft.SampMapEditor.Pedestrians;
-
-namespace Sasinosoft.SampMapEditor.IDE
+namespace Sasinosoft.SampMapEditor.Data
 {
-    public class SkinDefinition
+    public class ObjectDefinition
     {
         public string ModelName { get; set; }
         public string TextureDictionaryName { get; set; }
-        public string AnimationGroupName { get; set; }
-        public PedestrianType Type { get; set; }
+        public string AnimationName { get; set; }
     }
 }
