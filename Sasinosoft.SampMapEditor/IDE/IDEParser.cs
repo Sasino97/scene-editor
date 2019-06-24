@@ -10,6 +10,7 @@ using System.Text;
 using static Sasinosoft.SampMapEditor.Vehicles.VehicleUtils;
 using static Sasinosoft.SampMapEditor.Pedestrians.PedestrianUtils;
 using Sasinosoft.SampMapEditor.Utils;
+using Sasinosoft.SampMapEditor.Data;
 
 namespace Sasinosoft.SampMapEditor.IDE
 {
@@ -79,10 +80,14 @@ namespace Sasinosoft.SampMapEditor.IDE
                     if (line.StartsWith("objs", StringComparison.InvariantCultureIgnoreCase) || 
                         line.StartsWith("tobj", StringComparison.InvariantCultureIgnoreCase) || 
                         line.StartsWith("anim", StringComparison.InvariantCultureIgnoreCase) || 
-                        line.StartsWith("tanm", StringComparison.InvariantCultureIgnoreCase) || 
                         line.StartsWith("cars", StringComparison.InvariantCultureIgnoreCase) ||
                         line.StartsWith("weap", StringComparison.InvariantCultureIgnoreCase) ||
-                        line.StartsWith("peds", StringComparison.InvariantCultureIgnoreCase))
+                        line.StartsWith("peds", StringComparison.InvariantCultureIgnoreCase) ||
+                        // unused
+                        line.StartsWith("hier", StringComparison.InvariantCultureIgnoreCase) ||
+                        line.StartsWith("path", StringComparison.InvariantCultureIgnoreCase) ||
+                        line.StartsWith("2dfx", StringComparison.InvariantCultureIgnoreCase) ||
+                        line.StartsWith("txdp", StringComparison.InvariantCultureIgnoreCase))
                     {
                         mode = line.Substring(0, 4).ToLowerInvariant();
                     }
@@ -210,29 +215,6 @@ namespace Sasinosoft.SampMapEditor.IDE
                                 element.AnimationName = parts[3];
                                 element.DrawDistance = float.Parse(parts[4]);
                                 element.Flags = (IDEFlags)UInt32.Parse(parts[5]);
-                            }
-
-                            var obj = new ObjectDefinition()
-                            {
-                                ModelName = element.ModelName,
-                                TextureDictionaryName = element.TextureDictionaryName,
-                                AnimationName = element.AnimationName
-                            };
-                            MasterDictionary.ObjectDefinitions.Add((int)element.Id, obj);
-                        }
-                        else if (mode == "tanm")
-                        {
-                            var element = new ObjectsIDEElement();
-                            if (parts.Length >= 8)
-                            {
-                                element.Id = UInt32.Parse(parts[0]);
-                                element.ModelName = parts[1];
-                                element.TextureDictionaryName = parts[2];
-                                element.AnimationName = parts[3];
-                                element.DrawDistance = float.Parse(parts[4]);
-                                element.Flags = (IDEFlags)UInt32.Parse(parts[5]);
-                                element.TimeOn = UInt32.Parse(parts[6]);
-                                element.TimeOff = UInt32.Parse(parts[7]);
                             }
 
                             var obj = new ObjectDefinition()

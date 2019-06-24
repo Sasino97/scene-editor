@@ -6,7 +6,7 @@
 
 using Sasinosoft.SampMapEditor.Vehicles;
 
-namespace Sasinosoft.SampMapEditor.IDE
+namespace Sasinosoft.SampMapEditor.Data
 {
     public class VehicleDefinition
     {
