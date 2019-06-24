@@ -5,15 +5,22 @@
  */
 
 using Sasinosoft.SampMapEditor.Data;
+using Sasinosoft.SampMapEditor.IMG;
 using Sasinosoft.SampMapEditor.RenderWare;
+using Sasinosoft.SampMapEditor.RenderWare.Dff;
+using Sasinosoft.SampMapEditor.RenderWare.Txd;
 using Sasinosoft.SampMapEditor.Utils;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using System.Windows.Threading;
+
+using static Sasinosoft.SampMapEditor.Utils.MathUtils;
 
 namespace Sasinosoft.SampMapEditor.View
 {
@@ -25,6 +32,11 @@ namespace Sasinosoft.SampMapEditor.View
         {
             InitializeComponent();
             ViewModel = DataContext as EditorViewModel;
+
+            //
+            vp3d.Camera.Position = new Point3D(2484.0, -1662.0, 40.0); // Grove Street, home...
+            vp3d.Camera.LookDirection = new Vector3D(2484.0, -1562.0, 30.0);
+            vp3d.Camera.UpDirection = new Vector3D(0, 0, 1);
 
             //
             MasterDictionary.IMGLoadCompleted += OnMasterDictionaryIMGLoadCompleted;
@@ -45,8 +57,24 @@ namespace Sasinosoft.SampMapEditor.View
                     {
                         if (rayMeshResult.VisualHit is RenderWareModel rwModel)
                         {
+                            if (ViewModel.InfoObject != null)
+                            {
+                                ViewModel.InfoObject.IsSelected = false;
+                            }
+
                             rwModel = (RenderWareModel)rayMeshResult.VisualHit;
                             rwModel.IsSelected = true;
+                            ViewModel.InfoObject = rwModel; // temp
+                            ViewModel.Info = "";
+                            var tra = ViewModel.InfoObject.Transform as Transform3DGroup;
+                            foreach (var t3c in tra.Children)
+                            {
+                                if (t3c is RotateTransform3D)
+                                {
+                                    var rot = t3c as RotateTransform3D;
+                                    ViewModel.Info += $"{(rot.Rotation as AxisAngleRotation3D).Angle} "; // debug info
+                                }
+                            }
                             break;
                         }
                     }
@@ -87,32 +115,86 @@ namespace Sasinosoft.SampMapEditor.View
             else
             {
                 MasterDictionary.LoadIMG();
+            }
+        }
 
-                //var dffParser = new DffParser();
-                //var txdParser = new TxdParser();
+        private void CreateObjects()
+        {
+            var dffParser = new DffParser();
+            var txdParser = new TxdParser();
+            var openedArchives = new Dictionary<string, IMGArchive>();
+            var parsedModels = new Dictionary<string, ExtendedSection>();
+            var parsedTextures = new Dictionary<string, ExtendedSection>();
 
-                //RenderWareModel model;
-                //RenderWareTextureDictionary texture;
+            foreach (ObjectPlacementDefinition ipl in MasterDictionary.ObjectPlacementDefinitions)
+            {
+                ObjectDefinition ide;
+                bool exists = MasterDictionary.ObjectDefinitions.TryGetValue(ipl.Id, out ide);
+                if (exists)
+                {
+                    double distance = Point3D.Subtract(vp3d.Camera.Position, ipl.Position).Length;
+                    if (distance < 1500)
+                    {
+                        DirEntry modelDirEntry;
+                        DirEntry textureDirEntry;
+                        bool modelExists = MasterDictionary.Files.TryGetValue(ide.ModelName + ".dff", out modelDirEntry);
+                        bool textureExists = MasterDictionary.Files.TryGetValue(ide.TextureDictionaryName + ".txd", out textureDirEntry);
 
-                //using (var archive = new IMGArchive(sampFname))
-                //{
-                //    model = dffParser.Parse(archive, "GTASACrowbar1.dff");
-                //    texture = txdParser.Parse(archive, "MatTextures.txd");
-                //}
-                //using (var archive = new IMGArchive(gta3Fname))
-                //{
-                //}
-                //model.SetTextureData(texture);
+                        RenderWareModel model = null;
+                        RenderWareTextureDictionary textureDictionary = null;
 
-                //var transformGroup = new Transform3DGroup();
-                //model.Transform = transformGroup;
-                //transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 0, 0), 0.0)));
-                //transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), 270.0)));
-                //transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), 270.0)));
-                //transformGroup.Children.Add(new TranslateTransform3D(0.0, 0.0, 1.0));
+                        if (modelExists)
+                        {
+                            if (!openedArchives.ContainsKey(modelDirEntry.ArchiveName))
+                                openedArchives.Add(modelDirEntry.ArchiveName, new IMGArchive(modelDirEntry.ArchiveName));
 
-                //vp3d.Children.Add(model);
-                //ViewModel.IsReady = true;
+                            if (!parsedModels.ContainsKey(modelDirEntry.FileName))
+                            {
+                                var rwData = dffParser.Parse(openedArchives[modelDirEntry.ArchiveName], modelDirEntry.FileName);
+                                model = new RenderWareModel(rwData);
+                                parsedModels.Add(modelDirEntry.FileName, rwData);
+                            }
+                            else
+                                model = new RenderWareModel(parsedModels[modelDirEntry.FileName]);
+                        }
+
+                        if (textureExists)
+                        {
+                            if (!openedArchives.ContainsKey(textureDirEntry.ArchiveName))
+                                openedArchives.Add(textureDirEntry.ArchiveName, new IMGArchive(textureDirEntry.ArchiveName));
+
+                            if (!parsedTextures.ContainsKey(textureDirEntry.FileName))
+                            {
+                                var rwData = txdParser.Parse(openedArchives[textureDirEntry.ArchiveName], textureDirEntry.FileName);
+                                textureDictionary = new RenderWareTextureDictionary(rwData);
+                                parsedTextures.Add(textureDirEntry.FileName, rwData);
+                            }
+                            else
+                                textureDictionary = new RenderWareTextureDictionary(parsedTextures[textureDirEntry.FileName]);
+                        }
+
+                        if (model != null)
+                        {
+                            if (textureDictionary != null)
+                                model.SetTextureData(textureDictionary);
+
+                            var transformGroup = new Transform3DGroup();
+                            model.Transform = transformGroup;
+
+                            var r = QuaternionToEuler(ipl.Rotation);
+                            transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 0, 0), r.X)));
+                            transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), r.Y)));
+                            transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), r.Z)));
+                            transformGroup.Children.Add(new TranslateTransform3D(new Vector3D(ipl.Position.X, ipl.Position.Y, ipl.Position.Z)));
+                            vp3d.Children.Add(model);
+                        }
+                    }
+                }
+            }
+
+            foreach (IMGArchive ark in openedArchives.Values)
+            {
+                ark.Dispose();
             }
         }
 
@@ -127,7 +209,10 @@ namespace Sasinosoft.SampMapEditor.View
         }
         private void OnMasterDictionaryIPLLoadCompleted(object sender, EventArgs e)
         {
-            ViewModel.IsReady = true;
+            Dispatcher.Invoke(
+                DispatcherPriority.Normal,
+                new Action(() => { CreateObjects(); ViewModel.IsReady = true; })
+            );
         }
     }
 
@@ -139,6 +224,22 @@ namespace Sasinosoft.SampMapEditor.View
             get { return isReady; }
             set { SetProperty(ref isReady, value); }
         }
+
+        private RenderWareModel infoObject;
+        public RenderWareModel InfoObject
+        {
+            get { return infoObject; }
+            set { SetProperty(ref infoObject, value); }
+        }
+
+        private string info;
+        public string Info
+        {
+            get { return info; }
+            set { SetProperty(ref info, value); }
+        }
+
+        
     }
 
     public static class EditorCommands

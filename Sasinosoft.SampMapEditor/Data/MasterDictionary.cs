@@ -26,8 +26,8 @@ namespace Sasinosoft.SampMapEditor.Data
         public static Dictionary<int, WeaponDefinition> WeaponDefinitions = new Dictionary<int, WeaponDefinition>();
 
         // IPL containers
-        public static Dictionary<int, ObjectPlacementDefinition> ObjectPlacementDefinitions = new Dictionary<int, ObjectPlacementDefinition>();
-        public static Dictionary<int, VehiclePlacementDefinition> VehiclePlacementDefinitions = new Dictionary<int, VehiclePlacementDefinition>();
+        public static List<ObjectPlacementDefinition> ObjectPlacementDefinitions = new List<ObjectPlacementDefinition>();
+        public static List<VehiclePlacementDefinition> VehiclePlacementDefinitions = new List<VehiclePlacementDefinition>();
 
         // Events
         public static event EventHandler IMGLoadCompleted;

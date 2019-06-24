@@ -7,9 +7,6 @@ using System;
 using System.IO;
 using System.Text;
 
-using static Sasinosoft.SampMapEditor.Vehicles.VehicleUtils;
-using static Sasinosoft.SampMapEditor.Pedestrians.PedestrianUtils;
-using Sasinosoft.SampMapEditor.Utils;
 using Sasinosoft.SampMapEditor.Data;
 using System.Windows.Media.Media3D;
 
@@ -134,10 +131,10 @@ namespace Sasinosoft.SampMapEditor.IPL
 
                     try
                     {
-                        if (mode == "objs")
+                        if (mode == "inst")
                         {
                             var element = new InstanceIPLElement();
-                            if (parts.Length >= 10)
+                            if (parts.Length >= 11)
                             {
                                 element.Id = int.Parse(parts[0]);
                                 element.ModelName = parts[1];
@@ -149,7 +146,7 @@ namespace Sasinosoft.SampMapEditor.IPL
                                 element.RY = float.Parse(parts[7]);
                                 element.RZ = float.Parse(parts[8]);
                                 element.RW = float.Parse(parts[9]);
-                                element.LODIndex = int.Parse(parts[9]);
+                                element.LODIndex = int.Parse(parts[10]);
                             }
 
                             var obj = new ObjectPlacementDefinition()
@@ -160,7 +157,7 @@ namespace Sasinosoft.SampMapEditor.IPL
                                 Interior = element.Interior,
                                 LODIndex = element.LODIndex
                             };
-                            MasterDictionary.ObjectPlacementDefinitions.Add(element.Id, obj);
+                            MasterDictionary.ObjectPlacementDefinitions.Add(obj);
                         }
                         else if (mode == "cars")
                         {
@@ -195,7 +192,7 @@ namespace Sasinosoft.SampMapEditor.IPL
                                 Color1 = element.Color1,
                                 Color2 = element.Color2
                             };
-                            MasterDictionary.VehiclePlacementDefinitions.Add(element.Id, obj);
+                            MasterDictionary.VehiclePlacementDefinitions.Add(obj);
                         }
                     }
                     catch
