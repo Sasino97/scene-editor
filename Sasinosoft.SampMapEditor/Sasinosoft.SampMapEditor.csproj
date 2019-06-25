@@ -93,6 +93,7 @@
     <Compile Include="IPL\IPLElement.cs" />
     <Compile Include="Pedestrians\PedestrianType.cs" />
     <Compile Include="Pedestrians\PedestrianUtils.cs" />
+    <Compile Include="RenderWare\MaterialInfo.cs" />
     <Compile Include="Utils\Bindable.cs" />
     <Compile Include="Utils\BooleanToVisibilityInverseConverter.cs" />
     <Compile Include="Utils\DataNameAttribute.cs" />
