@@ -133,7 +133,7 @@ namespace Sasinosoft.SampMapEditor.View
                 if (exists)
                 {
                     double distance = Point3D.Subtract(vp3d.Camera.Position, ipl.Position).Length;
-                    if (distance < 1500)
+                    if (ipl.Interior == 0 && distance < 500)
                     {
                         DirEntry modelDirEntry;
                         DirEntry textureDirEntry;

@@ -6,7 +6,6 @@
 using ManagedSquish;
 using Sasinosoft.SampMapEditor.RenderWare.Txd;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;

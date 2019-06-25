@@ -4,7 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  */
 using Sasinosoft.SampMapEditor.RenderWare.Dff;
-using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
@@ -14,27 +13,6 @@ namespace Sasinosoft.SampMapEditor.RenderWare
 {
     public class RenderWareModel : ModelVisual3D
     {
-        private struct MaterialInfo
-        {
-            private static readonly Color selectionColor = Color.FromArgb(100, 30, 255, 30);
-            public MaterialGroup MaterialGroup;
-            public DiffuseMaterial SelectionMaterial;
-
-            public void SetIsSelected(bool isSelected)
-            {
-                if (isSelected)
-                {
-                    SelectionMaterial = new DiffuseMaterial(new SolidColorBrush(selectionColor));
-                    MaterialGroup.Children.Add(SelectionMaterial);
-                }
-                else
-                {
-                    if (SelectionMaterial != null)
-                        MaterialGroup.Children.Remove(SelectionMaterial);
-                }
-            }
-        }
-
         private Dictionary<string, List<MaterialInfo>> MaterialGroupDictionary = new Dictionary<string, List<MaterialInfo>>();
 
         private bool isSelected = false;
@@ -98,7 +76,7 @@ namespace Sasinosoft.SampMapEditor.RenderWare
 
                     var matGroup = new MaterialGroup();
                     model3d.Material = matGroup;
-                    matGroup.Children.Add(new SpecularMaterial(Brushes.White, 5));
+                    matGroup.Children.Add(new SpecularMaterial(Brushes.White, 3));
 
                     foreach (Section materialList in ((ExtendedSection)geometry).GetChildren(SectionType.RwMaterialList))
                     {
