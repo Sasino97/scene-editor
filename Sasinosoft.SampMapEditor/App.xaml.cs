@@ -4,8 +4,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  */
 using System.Windows;
+using System.Windows.Media.Animation;
 
 namespace Sasinosoft.SampMapEditor
 {
-    public partial class App : Application { }
+    public partial class App : Application
+    {
+        public App()
+        {
+            Timeline.DesiredFrameRateProperty.OverrideMetadata(
+                typeof(Timeline),
+                new FrameworkPropertyMetadata { DefaultValue = 60 }
+            );
+        }
+    }
 }
