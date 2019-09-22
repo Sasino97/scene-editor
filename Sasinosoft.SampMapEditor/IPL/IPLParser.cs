@@ -77,7 +77,6 @@ namespace Sasinosoft.SampMapEditor.IPL
 
         private void ParseBinaryIPL(byte[] data, out int errorCount)
         {
-            // TODO
             errorCount = 0;
         }
 
