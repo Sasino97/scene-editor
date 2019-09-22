@@ -9,6 +9,7 @@ namespace Sasinosoft.SampMapEditor.IMG
 {
     public struct DirEntry
     {
+        public string ArchiveName;
         public UInt32 Offset;
         public UInt16 Size;
         public UInt16 Size2;

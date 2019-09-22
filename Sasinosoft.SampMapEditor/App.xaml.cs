@@ -3,19 +3,21 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  */
+using System.Globalization;
+using System.Threading;
 using System.Windows;
-using System.Windows.Media.Animation;
 
 namespace Sasinosoft.SampMapEditor
 {
     public partial class App : Application
     {
+        public static string APP_TITLE = "Sasinosoft Scene Editor For SA-MP";
         public App()
         {
-            Timeline.DesiredFrameRateProperty.OverrideMetadata(
-                typeof(Timeline),
-                new FrameworkPropertyMetadata { DefaultValue = 60 }
-            );
+            // Very important. Miss these lines, and the decimal parsing might behave differently
+            // according to the geographical location of the computer running this app.
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
         }
     }
 }

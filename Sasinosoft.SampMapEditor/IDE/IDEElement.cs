@@ -6,12 +6,5 @@
 
 namespace Sasinosoft.SampMapEditor.IDE
 {
-    /// <summary>
-    /// Represent an "anim" IDE section.
-    /// </summary>
-    /// <see cref="https://gtamods.com/wiki/ANIM"/>
-    public class AnimObjectsIDESection : ObjectsIDESection
-    {
-        public string AnimationName;
-    }
+    public abstract class IDEElement { }
 }
