@@ -9,10 +9,10 @@ using Sasinosoft.SampMapEditor.Vehicles;
 namespace Sasinosoft.SampMapEditor.IDE
 {
     /// <summary>
-    /// Represent a "cars" IDE section.
+    /// Represents a "cars" IDE element.
     /// </summary>
     /// <see cref="https://gtamods.com/wiki/CARS_(IDE_Section)"/>
-    public class CarsIDESection : IDESection
+    public class CarsIDEElement : IDEElement
     {
         public UInt32 Id;
         public string ModelName;
@@ -22,12 +22,12 @@ namespace Sasinosoft.SampMapEditor.IDE
         public string GXTKey;
         public string Anims;
         public VehicleClass Class;
-        public UInt32 Frequency;
-        public UInt32 Unknown;
-        public UInt32 Comprules;
-        public UInt32 WheelId;
+        public string Frequency;
+        public string Unknown;
+        public string Comprules;
+        public Int32 WheelId;
         public float WheelScaleFront;
         public float WheelScaleRear;
-        public UInt32 WheelUpgradeClass;
+        public Int32 WheelUpgradeClass;
     }
 }

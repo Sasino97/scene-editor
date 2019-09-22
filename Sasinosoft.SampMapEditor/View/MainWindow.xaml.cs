@@ -8,6 +8,8 @@ using System.Windows;
 using System.Windows.Input;
 using Sasinosoft.SampMapEditor.Utils;
 
+using static Sasinosoft.SampMapEditor.App;
+
 namespace Sasinosoft.SampMapEditor.View
 {
     public partial class MainWindow : Window
@@ -63,7 +65,7 @@ namespace Sasinosoft.SampMapEditor.View
     public class MainWindowViewModel : ViewModel
     {
         // Window information //
-        private string title = "Sasinosoft Map Editor For SA-MP";
+        private string title = APP_TITLE;
         public string Title
         {
             get { return title; }
