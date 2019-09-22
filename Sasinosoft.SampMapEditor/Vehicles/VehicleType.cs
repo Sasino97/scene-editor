@@ -12,6 +12,9 @@ namespace Sasinosoft.SampMapEditor.Vehicles
     /// </summary>
     public enum VehicleType
     {
+        [DataName(null)]
+        Undefined,
+
         [DataName("car")]
         Car,
 

@@ -74,17 +74,31 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data\VehiclePlacementDefinition.cs" />
+    <Compile Include="Data\ObjectPlacementDefinition.cs" />
+    <Compile Include="IDE\PedsIDEElement.cs" />
     <Compile Include="IDE\IDEFlags.cs" />
-    <Compile Include="IDE\IDESection.cs" />
-    <Compile Include="IDE\CarsIDESection.cs" />
-    <Compile Include="IDE\ObjectsIDESection.cs" />
-    <Compile Include="IDE\AnimObjectsIDESection.cs" />
-    <Compile Include="IDE\TimeObjectsIDESection.cs" />
+    <Compile Include="IDE\IDEParser.cs" />
+    <Compile Include="IDE\IDEElement.cs" />
+    <Compile Include="IDE\CarsIDEElement.cs" />
+    <Compile Include="Data\VehicleDefinition.cs" />
+    <Compile Include="Data\SkinDefinition.cs" />
+    <Compile Include="Data\WeaponDefinition.cs" />
+    <Compile Include="Data\ObjectDefinition.cs" />
+    <Compile Include="IDE\WeaponsIDEElement.cs" />
+    <Compile Include="IDE\ObjectsIDEElement.cs" />
+    <Compile Include="IPL\CarsIPLElement.cs" />
+    <Compile Include="IPL\IPLParser.cs" />
+    <Compile Include="IPL\InstanceIPLElement.cs" />
     <Compile Include="IPL\IPLElement.cs" />
+    <Compile Include="Pedestrians\PedestrianType.cs" />
+    <Compile Include="Pedestrians\PedestrianUtils.cs" />
+    <Compile Include="RenderWare\MaterialInfo.cs" />
     <Compile Include="Utils\Bindable.cs" />
     <Compile Include="Utils\BooleanToVisibilityInverseConverter.cs" />
     <Compile Include="Utils\DataNameAttribute.cs" />
     <Compile Include="Vehicles\VehicleClass.cs" />
+    <Compile Include="Vehicles\VehicleUtils.cs" />
     <Compile Include="View\Editor.xaml.cs">
       <DependentUpon>Editor.xaml</DependentUpon>
     </Compile>
@@ -95,7 +109,7 @@
     <Compile Include="IMG\IMGArchive.cs" />
     <Compile Include="IMG\IMGArchiveFile.cs" />
     <Compile Include="IMG\UnknownIMGVersionException.cs" />
-    <Compile Include="Utils\GTASAFilesContainer.cs" />
+    <Compile Include="Data\MasterDictionary.cs" />
     <Compile Include="Utils\MouseUtils.cs" />
     <Compile Include="RenderWare\Dff\AnimPluginDataSection.cs" />
     <Compile Include="RenderWare\Dff\AtomicDataSection.cs" />
@@ -195,6 +209,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="copyright.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Utils\MathUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
