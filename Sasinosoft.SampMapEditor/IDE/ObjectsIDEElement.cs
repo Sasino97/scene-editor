@@ -8,18 +8,24 @@ using System;
 namespace Sasinosoft.SampMapEditor.IDE
 {
     /// <summary>
-    /// Represent an "objs" IDE section.
+    /// Represents "objs", "tobj", "anim" and "tanm" IDE elements.
     /// </summary>
     /// <see cref="https://gtamods.com/wiki/OBJS"/>
-    public class ObjectsIDESection : IDESection
+    /// <see cref="https://gtamods.com/wiki/TOBJ"/>
+    /// <see cref="https://gtamods.com/wiki/ANIM"/>
+    public class ObjectsIDEElement : IDEElement
     {
         public UInt32 Id;
         public string ModelName;
         public string TextureDictionaryName;
-        public UInt32 MeshCount;
-        public float DrawDistance1;
-        public float DrawDistance2; // ignored 
-        public float DrawDistance3; // ignored 
+        public float DrawDistance;
         public IDEFlags Flags;
+
+        // tobj and tanm
+        public UInt32 TimeOn;
+        public UInt32 TimeOff;
+
+        // anim and tanm
+        public string AnimationName;
     }
 }

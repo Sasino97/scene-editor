@@ -6,7 +6,6 @@
 using ManagedSquish;
 using Sasinosoft.SampMapEditor.RenderWare.Txd;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
@@ -20,7 +19,7 @@ namespace Sasinosoft.SampMapEditor.RenderWare
 
         public RenderWareTextureDictionary(ExtendedSection clump)
         {
-            foreach(Section section in clump.GetChildren(SectionType.RwTextureNative))
+            foreach (Section section in clump.GetChildren(SectionType.RwTextureNative))
             {
                 var textureInfo = (TextureNativeDataSection) ((ExtendedSection)section).GetChild(0);
                 var brush = new ImageBrush()
@@ -46,9 +45,9 @@ namespace Sasinosoft.SampMapEditor.RenderWare
 
                     if (rawStride * height != textureInfo.DataSize)
                     {
-                        Debug.WriteLine("Data Length Error. {0} != {1}",
-                            rawStride * height,
-                            textureInfo.DataSize);
+                        //Debug.WriteLine("Data Length Error. {0} != {1}",
+                        //    rawStride * height,
+                        //    textureInfo.DataSize);
                         return;
                     }
 
@@ -86,9 +85,9 @@ namespace Sasinosoft.SampMapEditor.RenderWare
 
                         if (rawStride * height != textureInfo.DataSize)
                         {
-                            Debug.WriteLine("Data Length Error. {0} != {1}",
-                                rawStride * height,
-                                textureInfo.DataSize);
+                            //Debug.WriteLine("Data Length Error. {0} != {1}",
+                            //    rawStride * height,
+                            //    textureInfo.DataSize);
                             return;
                         }
 
@@ -128,9 +127,9 @@ namespace Sasinosoft.SampMapEditor.RenderWare
 
                         if (rawStride * height != textureInfo.DataSize)
                         {
-                            Debug.WriteLine("Data Length Error. {0} != {1}",
-                                rawStride * height,
-                                textureInfo.DataSize);
+                            //Debug.WriteLine("Data Length Error. {0} != {1}",
+                            //    rawStride * height,
+                            //    textureInfo.DataSize);
                             return;
                         }
 
@@ -156,9 +155,9 @@ namespace Sasinosoft.SampMapEditor.RenderWare
                         
                         if(rawStride * height != textureInfo.DataSize)
                         {
-                            Debug.WriteLine("Data Length Error. {0} != {1}",
-                                rawStride * height, 
-                                textureInfo.DataSize);
+                            //Debug.WriteLine("Data Length Error. {0} != {1}",
+                            //    rawStride * height, 
+                            //    textureInfo.DataSize);
                             return;
                         }
 
