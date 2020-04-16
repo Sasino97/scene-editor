@@ -196,7 +196,7 @@
     <None Include="RenderWare\readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="license.txt" />
+    <None Include="LICENSE" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icon.ico" />
@@ -208,7 +208,7 @@
     <Resource Include="IPL\readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="copyright.txt" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Utils\MathUtils.cs" />
