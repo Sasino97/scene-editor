@@ -7,13 +7,13 @@ using System.Windows;
 // Le informazioni generali relative a un assembly sono controllate dal seguente 
 // set di attributi. Modificare i valori di questi attributi per modificare le informazioni
 // associate a un assembly.
-[assembly: AssemblyTitle("Sasinosoft.SampMapEditor")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Scene Editor")]
+[assembly: AssemblyDescription("SA-MP Scene Editor by Sasinosoft")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Sasinosoft")]
 [assembly: AssemblyProduct("Sasinosoft.SampMapEditor")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright ©  2018-2020 - Sasinosoft")]
+[assembly: AssemblyTrademark("Sasinosoft")]
 [assembly: AssemblyCulture("")]
 
 // Se si imposta ComVisible su false, i tipi in questo assembly non saranno visibili

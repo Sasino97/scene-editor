@@ -1,4 +1,7 @@
 syntax: glob
-.vs/*
-*/bin/*
-*/obj/*
+.vs/**
+**/bin/**
+**/obj/**
+.git/**
+.gitattributes
+.gitignore
